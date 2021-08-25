@@ -5,8 +5,6 @@ import User from "./pages/User";
 import Favorites from "./pages/Favorites";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
-
-
 export default function App() {
   return (
     <Router>
