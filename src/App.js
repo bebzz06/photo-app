@@ -37,7 +37,6 @@ export default function App() {
           <Route path="/user">
             <User />
           </Route>
-
           <Route path="/favorites">
             <Favorites />
           </Route>
