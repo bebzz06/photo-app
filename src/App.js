@@ -3,28 +3,19 @@ import Home from "./pages/Home";
 import Search from "./pages/Search";
 import User from "./pages/User";
 import Favorites from "./pages/Favorites";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import TopNav from "./Components/TopNav";
+import styled from "styled-components";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
+const Container = styled.div`
+  width: 1900 px;
+  height: 1425 px;
+`;
 export default function App() {
   return (
     <Router>
-      <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/search">Search</Link>
-            </li>
-            <li>
-              <Link to="/user">User</Link>
-            </li>
-            <li>
-              <Link to="/favorites">Favorites</Link>
-            </li>
-          </ul>
-        </nav>
+      <Container>
+        <TopNav />
         <Switch>
           <Route path="/" exact>
             <Home />
@@ -39,7 +30,7 @@ export default function App() {
             <Favorites />
           </Route>
         </Switch>
-      </div>
+      </Container>
     </Router>
   );
 }
