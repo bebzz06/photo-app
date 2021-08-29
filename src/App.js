@@ -4,12 +4,17 @@ import Search from "./pages/Search";
 import User from "./pages/User";
 import Favorites from "./pages/Favorites";
 import TopNav from "./Components/TopNav";
+import styled from "styled-components";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
+const Container = styled.div`
+  width: 1900 px;
+  height: 1425 px;
+`;
 export default function App() {
   return (
     <Router>
-      <div>
+      <Container>
         <TopNav />
         <Switch>
           <Route path="/" exact>
@@ -25,7 +30,7 @@ export default function App() {
             <Favorites />
           </Route>
         </Switch>
-      </div>
+      </Container>
     </Router>
   );
 }
