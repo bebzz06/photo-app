@@ -27,7 +27,7 @@ export default class Home extends React.Component {
             const { data } = await axios(
                 "https://api.unsplash.com/photos?page=1&order_by=latest&client_id=IHsyeMCMhd6I9URatMcGCgV_MR4TRXZTdGXkYAtuoKk"
             );
-            //console.log(data);
+
             this.setState({ photos: data });
         } catch (err) {
             this.setState({ hasError: true, isLoading: false });
@@ -38,13 +38,6 @@ export default class Home extends React.Component {
         this.getPhotos();
     }
     render() {
-        console.log(this.state.photos);
-        this.state.photos &&
-            console.log(
-                this.state.photos.map((photo) => {
-                    return photo.urls.raw;
-                })
-            );
         return (
             <PhotoContainer>
                 {this.state.photos &&

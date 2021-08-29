@@ -13,7 +13,6 @@ export default class Search extends React.Component {
         this.setState({ search: "" });
     };
     render() {
-        console.log(this.state);
         return (
             <form onSubmit={this.handleSubmit}>
                 <input
