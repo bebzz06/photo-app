@@ -17,9 +17,7 @@ export default function App() {
       <Container>
         <TopNav />
         <Switch>
-          <Route path="/" exact>
-            <Home />
-          </Route>
+          <Route path="/" exact component={Home} />
           <Route path="/search">
             <Search />
           </Route>
