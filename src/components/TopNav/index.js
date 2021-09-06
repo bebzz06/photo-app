@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import Search from "../Search"
+import SearchBar from "../SearchBar"
 import Icons from "../Icons"
 
 const TopNavContainer = styled.div`
@@ -12,7 +12,7 @@ const TopNavContainer = styled.div`
 export default function TopNav() {
   return (<div>
     <TopNavContainer>
-      <Search />
+      <SearchBar />
       <Icons />
     </TopNavContainer>
   </div>)

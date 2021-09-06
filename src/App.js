@@ -19,7 +19,7 @@ export default function App() {
         <TopNav />
         <Switch>
           <Route path="/" exact component={Home} />
-          <Route path="/search/photos/searchterm" component={Search} />
+          <Route path="/search/photos" component={Search} />
           <Route path="/explore" component={Explore} />
           <Route path="/user/username" component={User} />
           <Route path="/favorites" component={Favorites} />

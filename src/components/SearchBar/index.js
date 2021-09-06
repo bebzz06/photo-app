@@ -1,7 +1,8 @@
 import React from "react";
-export default class Search extends React.Component {
+import { withRouter } from "react-router";
+class SearchBar extends React.Component {
     state = {
-        search: ""
+        search: "",
     };
 
     handleChange = (e) => {
@@ -11,6 +12,7 @@ export default class Search extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
         this.setState({ search: "" });
+        this.props.history.push("/search/photos")
     };
     render() {
         return (
@@ -24,3 +26,4 @@ export default class Search extends React.Component {
         );
     }
 }
+export default withRouter(SearchBar);
