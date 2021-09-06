@@ -2,17 +2,16 @@ import React from "react";
 import { withRouter } from "react-router";
 class SearchBar extends React.Component {
     state = {
-        search: "",
+        searchTerm: ""
     };
 
     handleChange = (e) => {
-        this.setState({ search: e.target.value });
+        this.setState({ searchTerm: e.target.value });
     };
 
     handleSubmit = (e) => {
         e.preventDefault();
-        this.setState({ search: "" });
-        this.props.history.push("/search/photos")
+        this.setState({ searchTerm: "" });
     };
     render() {
         return (
@@ -20,7 +19,7 @@ class SearchBar extends React.Component {
                 <input
                     onChange={this.handleChange}
                     placeholder="Search..."
-                    value={this.state.search}
+                    value={this.state.searchTerm}
                 ></input>
             </form>
         );
