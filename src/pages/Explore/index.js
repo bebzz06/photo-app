@@ -58,7 +58,7 @@ export default class Explore extends React.Component {
                                 <Column>
                                     {columns.map((photo) => {
                                         return (
-                                            <Image alt={photo.alt_description} src={photo.urls.raw} />
+                                            <Image alt={photo.alt_description} src={photo.urls.regular} />
                                         );
                                     })}
                                 </Column>
