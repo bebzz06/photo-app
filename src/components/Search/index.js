@@ -1,16 +1,16 @@
 import React from "react";
 export default class Search extends React.Component {
     state = {
-        search: ""
+        searchTerm: ""
     };
 
     handleChange = (e) => {
-        this.setState({ search: e.target.value });
+        this.setState({ searchTerm: e.target.value });
     };
 
     handleSubmit = (e) => {
         e.preventDefault();
-        this.setState({ search: "" });
+        this.setState({ searchTerm: "" });
     };
     render() {
         return (
@@ -18,7 +18,7 @@ export default class Search extends React.Component {
                 <input
                     onChange={this.handleChange}
                     placeholder="Search..."
-                    value={this.state.search}
+                    value={this.state.searchTerm}
                 ></input>
             </form>
         );

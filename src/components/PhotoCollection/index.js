@@ -1,14 +1,6 @@
 import React from "react";
 import axios from "axios";
-import styled from "styled-components";
-
-const Container = styled.div`
-display: flex;
-`
-const Image = styled.img`
-width: 160px;
-height: 234px; 
-`
+import { Container, Image } from "./PhotoCollection.styles";
 
 export default class PhotoCollection extends React.Component {
     state = {
@@ -33,10 +25,6 @@ export default class PhotoCollection extends React.Component {
     }
     render() {
         const { collections } = this.state;
-        // if (collections) {
-        //     console.log(collections);
-
-        // }
         return (
             <>
                 <div>Recommendations </div>
