@@ -1,26 +1,7 @@
 import React from "react";
 import axios from "axios";
-import styled from "styled-components";
+import { MasonryContainer, ExploreContainer, Column, Image } from "./Explore.styles";
 
-const MasonryContainer = styled.div`
-  display: flex;
-  width: 932px;
-  height: 1274px;
-`;
-const ExploreContainer = styled.div`
-  display: flex;
-  width: 1900px;
-  height: 1333px;
-`;
-const Column = styled.div`
-  width: 33.33%;
-  padding: 24px 15px;
-`;
-const Image = styled.img`
-  width: 100%;
-  border-radius: 5%;
-  padding-bottom: 15px;
-`;
 export default class Explore extends React.Component {
     state = {
         photos: null,
@@ -58,7 +39,7 @@ export default class Explore extends React.Component {
                                 <Column>
                                     {columns.map((photo) => {
                                         return (
-                                            <Image alt={photo.alt_description} src={photo.urls.raw} />
+                                            <Image alt={photo.alt_description} src={photo.urls.regular} />
                                         );
                                     })}
                                 </Column>
