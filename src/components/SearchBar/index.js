@@ -11,7 +11,9 @@ class SearchBar extends React.Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
+        this.props.history.push(`/search/photos/${this.state.searchTerm}`)
         this.setState({ searchTerm: "" });
+
     };
     render() {
         return (

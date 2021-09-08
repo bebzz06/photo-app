@@ -25,6 +25,7 @@ export default class PhotoCollection extends React.Component {
     }
     render() {
         const { collections } = this.state;
+
         return (
             <>
                 <div>Recommendations </div>

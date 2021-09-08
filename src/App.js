@@ -1,12 +1,14 @@
 import React from "react";
 import Home from "pages/Home";
-import Search from "pages/Search";
+import SearchPhotos from "pages/SearchPhotos";
+import SearchCollections from "pages/SearchCollections";
 import Explore from "pages/Explore";
 import User from "pages/User";
 import Favorites from "pages/Favorites";
 import TopNav from "components/TopNav";
 import styled from "styled-components";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
 
 const Container = styled.div`
   width: 1900 px;
@@ -19,7 +21,8 @@ export default function App() {
         <TopNav />
         <Switch>
           <Route path="/" exact component={Home} />
-          <Route path="/search/photos/:searchTerm" component={Search} />
+          <Route path="/search/photos/:searchTerm" component={SearchPhotos} />
+          <Route path="/search/collections/:searchTerm" component={SearchCollections} />
           <Route path="/explore" component={Explore} />
           <Route path="/user/:username" component={User} />
           <Route path="/favorites" component={Favorites} />
