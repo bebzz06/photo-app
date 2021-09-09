@@ -15,7 +15,7 @@ export default class RandomPhotos extends React.Component {
     getPhotos = async () => {
         this.setState({ isLoading: true });
         try {
-            const url = `${process.env.REACT_APP_ENDPOINT}/photos?random&username&client_id=${process.env.REACT_APP_API_KEY}`
+            const url = `${process.env.REACT_APP_ENDPOINT}/photos/random?count=12&client_id=${process.env.REACT_APP_API_KEY}`
             const { data } = await axios(url);
             this.setState({ photos: data });
         } catch (err) {
