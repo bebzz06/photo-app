@@ -12,9 +12,7 @@ width: 825px;
 height: 108px;
 justify-content: space-between;
 padding: 27px;
-`
-export const Author = styled.div`
-display: flex;
+
 `
 export const Avatar = styled.img`
 width: 57px;
@@ -28,6 +26,7 @@ flex-direction: column;
 export const Photo = styled.img`
 width: 823px;
 height: 531px;
+cursor: pointer;
 `
 export const Footer = styled.div`
 display: flex;

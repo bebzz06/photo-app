@@ -17,11 +17,11 @@ export default function Icons() {
         </Icon>
         <Icon>
             <Heart />
-            Saved
+            <Link to={"/favorites"}> Saved</Link>
         </Icon>
         <Icon>
             <Scan />
-            Theme
+            <Link to={"/"}>Theme</Link>
         </Icon>
     </>)
 }
