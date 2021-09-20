@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { MasonryContainer, ExploreContainer, Column, Image } from "./Explore.styles";
+import { MasonryContainer, ExploreContainer, Column, ImageContainer, Image } from "./Explore.styles";
 
 export default class Explore extends React.Component {
     state = {
@@ -18,7 +18,6 @@ export default class Explore extends React.Component {
             for (let i = 0; i < 12; i++) {
                 masonry[i % 3].push(data[i]);
             }
-
             this.setState({ photos: masonry });
         } catch (err) {
             this.setState({ hasError: true, isLoading: false });
@@ -34,12 +33,15 @@ export default class Explore extends React.Component {
             <ExploreContainer>
                 <MasonryContainer>
                     {photos &&
-                        photos.map((columns) => {
+                        photos.map((column) => {
                             return (
                                 <Column>
-                                    {columns.map((photo) => {
+                                    {column.map((photo) => {
                                         return (
-                                            <Image alt={photo.alt_description} src={photo.urls.regular} />
+                                            <ImageContainer>
+                                                <Image alt={photo.alt_description} src={photo.urls.regular} />
+                                            </ImageContainer>
+
                                         );
                                     })}
                                 </Column>

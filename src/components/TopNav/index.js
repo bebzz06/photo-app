@@ -4,16 +4,15 @@ import Icons from "../Icons"
 
 const TopNavContainer = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-around;
   height: 64px;
-  width: 894px;
+  width: 900px;
+  justify-content: space-between;
 `;
 export default function TopNav() {
-  return (<div>
+  return (
     <TopNavContainer>
       <SearchBar />
       <Icons />
     </TopNavContainer>
-  </div>)
+  )
 }

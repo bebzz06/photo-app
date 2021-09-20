@@ -1,10 +1,21 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom"
 
-export const ExploreContainer = styled.div`
+export const SearchPhotosContainer = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
 `;
+export const LinksContainer = styled.div`
+display: flex;
+justify-content: center;
+`
+export const StyledLink = styled(Link)`
+font-size: 32px;
+color: black;
+text-decoration: none;
+flex-basis: 100%;
 
+`
 export const MasonryContainer = styled.div`
   display: flex;
   width: 928px;
@@ -12,6 +23,7 @@ export const MasonryContainer = styled.div`
   padding-top: 20px;
   padding-left: 14px;
   padding-right: 14px;
+
 `;
 
 export const Column = styled.div`
@@ -27,9 +39,11 @@ margin-bottom: 28px;
 max-width: 100%;
 min-height: 325px;
 `
+
 export const Image = styled.img`
   width: 100%;
   height: 100%;
   border-radius: 8px;
   object-fit: cover;
+  
 `;

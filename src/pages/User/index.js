@@ -1,8 +1,6 @@
 import React from "react";
 import axios from "axios";
-import Masonry from "react-masonry-css";
-import "./styles.css";
-
+import { Container, Wrapper, ProfilePicture, InfoContainer, Name, PortfolioLink, Statistics, TotalPhotosWrapper, TotalPhotos, FollowersCountWrapper, FollowersCount, Label, MasonryContainer, Column, ImageContainer, Image } from "./User.styles";
 
 export default class User extends React.Component {
     state = {
@@ -34,38 +32,57 @@ export default class User extends React.Component {
         try {
             const url = `${process.env.REACT_APP_ENDPOINT}/users/${user}/photos?&per_page=12&client_id=${process.env.REACT_APP_API_KEY}`
             const { data } = await axios(url);
-            this.setState({ photoList: data });
+            let masonry = [[], [], []];
+            for (let i = 0; i < 12; i++) {
+                masonry[i % 3].push(data[i]);
+            }
+            this.setState({ photoList: masonry });
         } catch (err) {
             this.setState({ hasError: true, isLoading: false });
         }
     };
 
-
     render() {
         const { user, photoList } = this.state;
         return (
-            <div>
+            <Container>
                 {user &&
-                    <>
-                        <img alt='profile' src={user.profile_image.large} />
-                        <h1>{user.first_name}</h1>
-                        <h1>{user.portfolio_url}</h1>
-                        <div>
-                            <h2>Photos - {user.total_photos} </h2>
-                            <h2> Followers - {user.followers_count}</h2>
-                        </div>
-                    </>}
-                <Masonry breakpointCols={3} className="my-masonry-grid"
-                    columnClassName="my-masonry-grid_column">
-                    {photoList && photoList.map((item) => {
-                        return (
-                            <img alt={item.alt_description} src={item.urls.small} />
-                        )
-                    })}
+                    <Wrapper>
+                        <ProfilePicture alt='profile' src={user.profile_image.large} />
+                        <InfoContainer>
+                            <Name>{user.first_name}</Name>
+                            <PortfolioLink href={user.portfolio_url}>Portofolio</PortfolioLink>
+                            <Statistics>
+                                <TotalPhotosWrapper>
+                                    <TotalPhotos>{user.total_photos} </TotalPhotos>
+                                    <Label>Photos</Label>
+                                </TotalPhotosWrapper>
+                                <FollowersCountWrapper>
+                                    <FollowersCount>{user.followers_count}</FollowersCount>
+                                    <Label>Followers</Label>
+                                </FollowersCountWrapper>
+                            </Statistics>
+                        </InfoContainer>
+                    </Wrapper>}
+                <MasonryContainer>
+                    {photoList &&
+                        photoList.map((column) => {
+                            return (
+                                <Column>
+                                    {column.map((item) => {
+                                        return (
+                                            <ImageContainer>
+                                                <Image alt={item.alt_description} src={item.urls.regular} />
+                                            </ImageContainer>
 
-                </Masonry>
+                                        );
+                                    })}
+                                </Column>
+                            );
+                        })}
+                </MasonryContainer>
 
-            </div>
+            </Container>
 
 
 

@@ -1,10 +1,20 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom"
 
-export const ExploreContainer = styled.div`
+export const SearchCollectionsContainer = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
 `;
-
+export const LinksContainer = styled.div`
+display: flex;
+justify-content: center;
+`
+export const StyledLink = styled(Link)`
+font-size: 32px;
+color: black;
+text-decoration: none;
+flex-basis: 100%;
+`
 export const MasonryContainer = styled.div`
   display: flex;
   width: 928px;
@@ -21,15 +31,17 @@ export const Column = styled.div`
   margin: 15px;
 `;
 
-export const ImageContainer = styled.div`
+export const CollectionContainer = styled.div`
 position: relative;
 margin-bottom: 28px;
 max-width: 100%;
 min-height: 325px;
 `
-export const Image = styled.img`
+
+export const Collection = styled.img`
   width: 100%;
   height: 100%;
   border-radius: 8px;
   object-fit: cover;
+  
 `;
