@@ -56,7 +56,6 @@ export default class RandomPhotos extends React.Component {
         this.getPhotos();
     }
     render() {
-        console.log(this.state.likedPhotos)
         const { photos, modalPhoto } = this.state;
         return (
             <Container>{photos && photos.map((photo, index) => {
