@@ -1,15 +1,6 @@
 import React from "react";
 import axios from "axios";
-import Masonry from "react-masonry-css";
-import "./styles.css";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-
-const Container = styled.div`
-display: flex;
-justify-content: center;
-`
-
+import { SearchCollectionsContainer, LinksContainer, StyledLink, MasonryContainer, Column, CollectionContainer, Collection } from "./SearchCollections.styles";
 
 
 export default class SearchCollections extends React.Component {
@@ -24,7 +15,13 @@ export default class SearchCollections extends React.Component {
         try {
             const url = `${process.env.REACT_APP_ENDPOINT}/search/collections?per_page=12&query=${searchTerm}&client_id=${process.env.REACT_APP_API_KEY}`
             const { data } = await axios(url);
-            this.setState({ collections: data });
+            console.log(data);
+            let masonry = [[], [], []];
+            for (let i = 0; i < 12; i++) {
+                masonry[i % 3].push(data.results[i]);
+            }
+            console.log(masonry);
+            this.setState({ collections: masonry });
 
         } catch (err) {
             this.setState({ hasError: true, isLoading: false });
@@ -37,24 +34,31 @@ export default class SearchCollections extends React.Component {
 
     render() {
         const { collections } = this.state;
-
         return (
-            <div>
-                <Container>
-                    <Link to={`/search/photos/${this.props.match.params.searchTerm}`}>Photos </Link>
-                    <Link to={`/search/collections/${this.props.match.params.searchTerm}`}> Collections</Link>
-                </Container>
-                <Masonry breakpointCols={3} className="my-masonry-grid"
-                    columnClassName="my-masonry-grid_column">
-                    {collections && collections.results.map((result) => {
-                        return (
-                            <img alt={result.cover_photo.alt_description} src={result.cover_photo.urls.small} />
-                        )
-                    })}
+            <SearchCollectionsContainer>
+                <LinksContainer>
+                    <StyledLink to={`/search/photos/${this.props.match.params.searchTerm}`}>Photos </StyledLink>
+                    <StyledLink to={`/search/collections/${this.props.match.params.searchTerm}`}> Collections</StyledLink>
+                </LinksContainer>
+                <MasonryContainer>
+                    {collections &&
+                        collections.map((column) => {
+                            return (
+                                <Column>
+                                    {column.map((collection) => {
+                                        return (
+                                            <CollectionContainer>
+                                                <Collection alt={collection.cover_photo.alt_description} src={collection.cover_photo.urls.regular} />
+                                            </CollectionContainer>
 
-                </Masonry>
-            </div>
-
+                                        );
+                                    })}
+                                </Column>
+                            );
+                        })}
+                </MasonryContainer>
+            </SearchCollectionsContainer>
         )
+
     }
 }

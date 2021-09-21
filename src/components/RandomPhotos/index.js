@@ -1,16 +1,19 @@
 import React from "react";
 import axios from "axios";
+import ReactModal from "react-modal"
 import moment from "moment";
-import { ReactComponent as BrokenHeart } from "images/Iconly-Broken-Heart.svg";
-import { ReactComponent as Star } from "images/Star.svg";
-import { ReactComponent as ThreeDots } from "images/ThreeDots.svg";
-import { Container, TopWrapper, Author, Avatar, AuthorInfo, Photo, Footer } from "./RandomPhotos.styles"
+import { Container, Post, TopWrapper, StyledLink, Avatar, AuthorInfo, UserName, Updated, PhotoDescription, PhotoWrapper, Photo, Footer, BrokenHeartIcon, StyledBrokenHeart, StyledStar, StyledThreeDots, StyledCross } from "./RandomPhotos.styles"
 export default class RandomPhotos extends React.Component {
     state = {
         photos: null,
         isLoading: false,
-        hasError: false
-
+        hasError: false,
+        modalPhoto: null,
+        showModal: false,
+        likedPhotos: []
+    }
+    setInStorage = (photo) => {
+        localStorage.setItem("liked", JSON.stringify(photo))
     }
     getPhotos = async () => {
         this.setState({ isLoading: true });
@@ -23,35 +26,84 @@ export default class RandomPhotos extends React.Component {
         }
     };
 
+    handleOpenModal = (i) => {
+        this.setState({ modalPhoto: this.state.photos[i] })
+        this.setState({ showModal: true })
+    }
+
+    handleCloseModal = () => {
+        this.setState({ showModal: false })
+    }
+
+    handleLike = (photo) => {
+        //check for duplicate
+        const likedPhotos = this.state.likedPhotos
+        const isDuplicate = likedPhotos.some((likedPhoto) => likedPhoto.id === photo.id)
+        if (isDuplicate) return;
+        //set photo as liked
+        const photos = [...this.state.likedPhotos, photo];
+        const newPhotos = photos.filter((photo) => {
+            if (photo.liked_by_user === false) {
+                photo.liked_by_user = !photo.liked_by_user
+            }
+            return photo
+        });
+        this.setState({ likedPhotos: newPhotos })
+        this.setInStorage(newPhotos);
+    }
+
     componentDidMount() {
         this.getPhotos();
     }
     render() {
-        const { photos } = this.state;
+        const { photos, modalPhoto } = this.state;
         return (
-            <>{photos && photos.map((photo) => {
+            <Container>{photos && photos.map((photo, index) => {
                 return (
-                    <Container>
+                    <Post>
+
                         <TopWrapper>
-                            <Author>
+                            <StyledLink to={`/user/${photo.user.username}`}>
                                 <Avatar alt='' src={photo.user.profile_image.large} />
                                 <AuthorInfo>
-                                    <div>{photo.user.username}</div>
-                                    <div>{moment(Date.parse(photo.updated_at)).fromNow()}</div>
+                                    <UserName>{photo.user.username}</UserName>
+                                    <Updated>{moment(Date.parse(photo.updated_at)).fromNow()}</Updated>
                                 </AuthorInfo>
-                            </Author>
-                            <ThreeDots />
+                            </StyledLink>
+                            <StyledThreeDots onClick={() => this.handleOpenModal(index)} />
                         </TopWrapper>
-                        <div>{photo.description}</div>
-                        <Photo alt={photo.alt_description} src={photo.urls.regular} />
+                        <PhotoDescription>{photo.description}</PhotoDescription>
+                        <PhotoWrapper>
+                            <Photo onClick={() => this.handleOpenModal(index)} alt={photo.alt_description} src={photo.urls.regular} />
+                        </PhotoWrapper>
                         <Footer>
-                            <div><BrokenHeart />{photo.likes}</div>
-                            <Star />
+                            <BrokenHeartIcon><StyledBrokenHeart />{photo.likes}</BrokenHeartIcon>
+                            <StyledStar onClick={() => this.handleLike(photo)} />
                         </Footer>
-
-                    </Container>
+                    </Post>
                 )
-            })}</>
+            })}
+
+                {modalPhoto &&
+                    < ReactModal isOpen={this.state.showModal} contentLabel='photo' >
+                        <TopWrapper>
+                            <StyledLink to={`/user/${modalPhoto.user.username}`} >
+                                <Avatar alt='' src={modalPhoto.user.profile_image.large} />
+                                <AuthorInfo>
+                                    <div>{modalPhoto.user.username}</div>
+                                    <div>{moment(Date.parse(modalPhoto.updated_at)).fromNow()}</div>
+                                </AuthorInfo>
+                            </StyledLink>
+                            <StyledCross onClick={this.handleCloseModal} />
+                        </TopWrapper>
+                        <div>{modalPhoto.description}</div>
+                        <Photo alt={modalPhoto.alt_description} src={modalPhoto.urls.regular} />
+                        <Footer >
+                            <BrokenHeartIcon><StyledBrokenHeart />{modalPhoto.likes}</BrokenHeartIcon>
+                            <StyledStar />
+                        </Footer>
+                    </ReactModal>}
+            </Container>
         )
 
     }

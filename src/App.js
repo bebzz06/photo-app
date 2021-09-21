@@ -7,16 +7,30 @@ import User from "pages/User";
 import Favorites from "pages/Favorites";
 import TopNav from "components/TopNav";
 import styled from "styled-components";
+import { createGlobalStyle } from "styled-components";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
+const GlobalStyle = createGlobalStyle`
+
+body{
+  font-family: Poppins;
+  text-align: center;
+  background-color: rgb (249,250,251);
+  color: rgb (0,0,0)
+}
+
+`
 
 const Container = styled.div`
-  width: 1900 px;
-  height: 1425 px;
+display: flex;
+flex-direction: column;
+align-items: center;
+border: 10px solid white;
 `;
 export default function App() {
   return (
     <Router>
+      <GlobalStyle />
       <Container>
         <TopNav />
         <Switch>

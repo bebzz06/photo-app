@@ -1,5 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
+import { FormContainer, StyledInput, StyledBrokenSearch } from "./SearchBar.styles"
+
 class SearchBar extends React.Component {
     state = {
         searchTerm: ""
@@ -17,13 +19,17 @@ class SearchBar extends React.Component {
     };
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <input
-                    onChange={this.handleChange}
-                    placeholder="Search..."
-                    value={this.state.searchTerm}
-                ></input>
-            </form>
+            <FormContainer>
+                <StyledBrokenSearch />
+                <form onSubmit={this.handleSubmit}>
+                    <StyledInput
+                        onChange={this.handleChange}
+                        placeholder="Search..."
+                        value={this.state.searchTerm}
+                    />
+                </form>
+            </FormContainer>
+
         );
     }
 }

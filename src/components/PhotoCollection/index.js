@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { Container, Image } from "./PhotoCollection.styles";
+import { Container, Image, Header, Gallery, ImageContainer } from "./PhotoCollection.styles";
 
 export default class PhotoCollection extends React.Component {
     state = {
@@ -27,17 +27,22 @@ export default class PhotoCollection extends React.Component {
         const { collections } = this.state;
 
         return (
-            <>
-                <div>Recommendations </div>
-                <Container>
 
+
+            <Container>
+                <Header>Recommendations </Header>
+                <Gallery>
                     {collections && collections.map((collection) => {
                         return (
-                            <Image alt={collection.cover_photo.alt_description} src={collection.cover_photo.urls.small} />
+                            <ImageContainer>
+                                <Image alt={collection.cover_photo.alt_description} src={collection.cover_photo.urls.small} />
+                            </ImageContainer>
                         )
                     })}
-                </Container>
-            </>
+                </Gallery>
+
+            </Container>
+
 
 
         )
