@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import ReactModal from "react-modal";
 import BrokenHeart from "images/Iconly-Broken-Heart.svg";
 import Star from "images/Star.svg";
 import ThreeDots from "images/ThreeDots.svg";
@@ -86,6 +87,7 @@ min-height: 530px;
 min-width: 830px;
 border-radius: 8px;
 cursor: pointer;
+object-fit: cover;
 `
 export const Footer = styled.div`
 display: flex;
@@ -111,9 +113,36 @@ height: 31px;
 cursor: pointer;
 `
 
+
 export const StyledCross = styled.div`
 background: url(${Cross}) no-repeat center center;
 width: 31px;
 height: 31px;
 cursor: pointer;
+`
+export const StyledModal = styled(ReactModal)`
+overflow: hidden;
+    background-color: rgb(154, 154, 154);
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    opacity: 0.95;
+    top: 0px;
+    left: 0px;
+    z-index: 999;
+`
+export const ModalContainer = styled.div`
+display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    inset: 0px;
+    margin: auto;
+    border-radius: 4px;
+    z-index: 1000;
+    background-color: white;
+    max-height: 890px;
+    max-width: 830px;
+    padding-left: 32px;
+    padding-right: 37px;
 `

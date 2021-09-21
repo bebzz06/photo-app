@@ -1,8 +1,7 @@
 import React from "react";
 import axios from "axios";
-import ReactModal from "react-modal"
 import moment from "moment";
-import { Container, Post, TopWrapper, StyledLink, Avatar, AuthorInfo, UserName, Updated, PhotoDescription, PhotoWrapper, Photo, Footer, BrokenHeartIcon, StyledBrokenHeart, StyledStar, StyledThreeDots, StyledCross } from "./RandomPhotos.styles"
+import { Container, Post, TopWrapper, StyledLink, Avatar, AuthorInfo, UserName, Updated, PhotoDescription, PhotoWrapper, Photo, Footer, BrokenHeartIcon, StyledBrokenHeart, StyledStar, StyledThreeDots, StyledModal, ModalContainer, StyledCross } from "./RandomPhotos.styles"
 export default class RandomPhotos extends React.Component {
     state = {
         photos: null,
@@ -18,7 +17,7 @@ export default class RandomPhotos extends React.Component {
     getPhotos = async () => {
         this.setState({ isLoading: true });
         try {
-            const url = `${process.env.REACT_APP_ENDPOINT}/photos/random?count=12&client_id=${process.env.REACT_APP_API_KEY}`
+            const url = `${process.env.REACT_APP_ENDPOINT}/photos/random?count=12&orientation=landscape&client_id=${process.env.REACT_APP_API_KEY}`
             const { data } = await axios(url);
             this.setState({ photos: data });
         } catch (err) {
@@ -27,6 +26,7 @@ export default class RandomPhotos extends React.Component {
     };
 
     handleOpenModal = (i) => {
+        console.log(i);
         this.setState({ modalPhoto: this.state.photos[i] })
         this.setState({ showModal: true })
     }
@@ -56,7 +56,6 @@ export default class RandomPhotos extends React.Component {
         this.getPhotos();
     }
     render() {
-        console.log(this.state.likedPhotos)
         const { photos, modalPhoto } = this.state;
         return (
             <Container>{photos && photos.map((photo, index) => {
@@ -86,24 +85,26 @@ export default class RandomPhotos extends React.Component {
             })}
 
                 {modalPhoto &&
-                    < ReactModal isOpen={this.state.showModal} contentLabel='photo' >
-                        <TopWrapper>
-                            <StyledLink to={`/user/${modalPhoto.user.username}`} >
-                                <Avatar alt='' src={modalPhoto.user.profile_image.large} />
-                                <AuthorInfo>
-                                    <div>{modalPhoto.user.username}</div>
-                                    <div>{moment(Date.parse(modalPhoto.updated_at)).fromNow()}</div>
-                                </AuthorInfo>
-                            </StyledLink>
-                            <StyledCross onClick={this.handleCloseModal} />
-                        </TopWrapper>
-                        <div>{modalPhoto.description}</div>
-                        <Photo alt={modalPhoto.alt_description} src={modalPhoto.urls.regular} />
-                        <Footer >
-                            <BrokenHeartIcon><StyledBrokenHeart />{modalPhoto.likes}</BrokenHeartIcon>
-                            <StyledStar />
-                        </Footer>
-                    </ReactModal>}
+                    < StyledModal isOpen={this.state.showModal} contentLabel='photo'>
+                        <ModalContainer>
+                            <TopWrapper>
+                                <StyledLink to={`/user/${modalPhoto.user.username}`} >
+                                    <Avatar alt='' src={modalPhoto.user.profile_image.large} />
+                                    <AuthorInfo>
+                                        <UserName>{modalPhoto.user.username}</UserName>
+                                        <Updated>{moment(Date.parse(modalPhoto.updated_at)).fromNow()}</Updated>
+                                    </AuthorInfo>
+                                </StyledLink>
+                                <StyledCross onClick={this.handleCloseModal} />
+                            </TopWrapper>
+                            <Photo alt={modalPhoto.alt_description} src={modalPhoto.urls.regular} />
+                            <Footer >
+                                <BrokenHeartIcon><StyledBrokenHeart />{modalPhoto.likes}</BrokenHeartIcon>
+                                <StyledStar />
+                            </Footer>
+                        </ModalContainer>
+
+                    </StyledModal>}
             </Container>
         )
 
