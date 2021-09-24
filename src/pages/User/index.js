@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import Modal from "components/Modal";
 import { Container, Wrapper, ProfilePicture, InfoContainer, Name, PortfolioLink, Statistics, TotalPhotosWrapper, TotalPhotos, FollowersCountWrapper, FollowersCount, Label, MasonryContainer, Column, ImageContainer, Image } from "./User.styles";
 
 export default class User extends React.Component {
@@ -7,7 +8,11 @@ export default class User extends React.Component {
         user: null,
         isLoading: false,
         hasError: false,
-        photoList: null
+        photoList: null,
+        showModal: -1,
+        currentCol: -1,
+        currentPhoto: -1,
+        likedPhotos: []
 
     }
     getUser = async (user) => {
@@ -30,7 +35,7 @@ export default class User extends React.Component {
     getPhotos = async (user) => {
         this.setState({ isLoading: true });
         try {
-            const url = `${process.env.REACT_APP_ENDPOINT}/users/${user}/photos?&per_page=12&client_id=${process.env.REACT_APP_API_KEY}`
+            const url = `${process.env.REACT_APP_ENDPOINT}/users/${user}/photos?&per_page=12&orientation=landscape&client_id=${process.env.REACT_APP_API_KEY}`
             const { data } = await axios(url);
             let masonry = [[], [], []];
             for (let i = 0; i < 12; i++) {
@@ -41,9 +46,12 @@ export default class User extends React.Component {
             this.setState({ hasError: true, isLoading: false });
         }
     };
+    handleModal = (columnIndex, photoIndex) => {
+        this.setState({ showModal: columnIndex, currentCol: columnIndex, currentPhoto: photoIndex })
+    }
 
     render() {
-        const { user, photoList } = this.state;
+        const { user, photoList, showModal, currentCol, currentPhoto } = this.state;
         return (
             <Container>
                 {user &&
@@ -66,13 +74,13 @@ export default class User extends React.Component {
                     </Wrapper>}
                 <MasonryContainer>
                     {photoList &&
-                        photoList.map((column) => {
+                        photoList.map((column, columnIndex) => {
                             return (
                                 <Column>
-                                    {column.map((item) => {
+                                    {column.map((item, photoIndex) => {
                                         return (
                                             <ImageContainer>
-                                                <Image alt={item.alt_description} src={item.urls.regular} />
+                                                <Image onClick={() => this.handleModal(columnIndex, photoIndex)} alt={item.alt_description} src={item.urls.regular} />
                                             </ImageContainer>
 
                                         );
@@ -81,7 +89,7 @@ export default class User extends React.Component {
                             );
                         })}
                 </MasonryContainer>
-
+                {showModal > -1 && <Modal photo={photoList[currentCol][currentPhoto]} showModal={showModal} handleModal={this.handleModal} />}
             </Container>
 
 

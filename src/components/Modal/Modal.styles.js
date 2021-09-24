@@ -1,25 +1,35 @@
 import styled from "styled-components";
 import BrokenHeart from "images/Iconly-Broken-Heart.svg";
 import Star from "images/Star.svg";
-import ThreeDots from "images/ThreeDots.svg";
 import Cross from "images/Icon-metro-cross.svg"
 import { Link } from "react-router-dom";
 
-export const Container = styled.div`
-display: flex;
-flex-direction: column;
-align-items: center;
+export const StyledModal = styled.div`
+background-color: rgb(154, 154, 154);
+width: 100%;
+height: 100%;
+position: fixed;
+opacity: 0.98;
+top: 0px;
+left: 0px;
+z-index: 999;
 `
-export const Post = styled.div`
+export const ModalContainer = styled.div`
 display: flex;
-max-width: 830px;
-margin-top: 16px;
-border-radius: 4px;
 flex-direction: column;
 align-items: center;
+position: fixed;
+inset: 0px;
+margin: auto;
+border-radius: 4px;
+z-index: 1000;
+background-color: white;
+max-height: 890px;
+max-width: 830px;
 padding-left: 32px;
 padding-right: 37px;
 `
+
 export const TopWrapper = styled.div`
 display: flex;
 width: 100%;
@@ -58,26 +68,11 @@ font-size: 14px;
 text-align: start;
 opacity: 0.39;
 `
-export const StyledThreeDots = styled.div`
-background: url(${ThreeDots}) no-repeat center center;
+export const StyledCross = styled.div`
+background: url(${Cross}) no-repeat center center;
 width: 31px;
 height: 31px;
 cursor: pointer;
-`
-export const PhotoDescription = styled.div`
-font-size: 15px;
-font-weight: 500;
-width: 100%;
-text-align: left;
-margin-bottom: 16px;
-`
-export const PhotoWrapper = styled.div`
-position: relative;
-width: 100%;
-height: 100%;
-min-height: 530px;
-padding-left: 35px;
-padding-right: 35px;
 `
 export const Photo = styled.img`
 width: 100%;
@@ -107,14 +102,6 @@ cursor: pointer;
 `
 export const StyledStar = styled.div`
 background: url(${Star}) no-repeat center center;
-width: 31px;
-height: 31px;
-cursor: pointer;
-`
-
-
-export const StyledCross = styled.div`
-background: url(${Cross}) no-repeat center center;
 width: 31px;
 height: 31px;
 cursor: pointer;

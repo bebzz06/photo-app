@@ -5,6 +5,7 @@ import SearchCollections from "pages/SearchCollections";
 import Explore from "pages/Explore";
 import User from "pages/User";
 import Favorites from "pages/Favorites";
+import Collection from "pages/Collection";
 import TopNav from "components/TopNav";
 import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="/explore" component={Explore} />
           <Route path="/user/:username" component={User} />
           <Route path="/favorites" component={Favorites} />
+          <Route path="/collection/:id" component={Collection} />
         </Switch>
       </Container>
     </Router>

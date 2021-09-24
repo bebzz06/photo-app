@@ -7,20 +7,18 @@ export default class SearchCollections extends React.Component {
     state = {
         collections: null,
         isLoading: false,
-        hasError: false
-
+        hasError: false,
     }
+
     getCollections = async (searchTerm) => {
         this.setState({ isLoading: true });
         try {
             const url = `${process.env.REACT_APP_ENDPOINT}/search/collections?per_page=12&query=${searchTerm}&client_id=${process.env.REACT_APP_API_KEY}`
             const { data } = await axios(url);
-            console.log(data);
             let masonry = [[], [], []];
             for (let i = 0; i < 12; i++) {
                 masonry[i % 3].push(data.results[i]);
             }
-            console.log(masonry);
             this.setState({ collections: masonry });
 
         } catch (err) {
@@ -34,6 +32,7 @@ export default class SearchCollections extends React.Component {
 
     render() {
         const { collections } = this.state;
+
         return (
             <SearchCollectionsContainer>
                 <LinksContainer>

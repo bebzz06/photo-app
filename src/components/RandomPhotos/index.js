@@ -1,14 +1,15 @@
 import React from "react";
 import axios from "axios";
 import moment from "moment";
-import { Container, Post, TopWrapper, StyledLink, Avatar, AuthorInfo, UserName, Updated, PhotoDescription, PhotoWrapper, Photo, Footer, BrokenHeartIcon, StyledBrokenHeart, StyledStar, StyledThreeDots, StyledModal, ModalContainer, StyledCross } from "./RandomPhotos.styles"
+import Modal from "components/Modal";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { Container, Post, TopWrapper, StyledLink, Avatar, AuthorInfo, UserName, Updated, PhotoDescription, PhotoWrapper, Photo, Footer, BrokenHeartIcon, StyledBrokenHeart, StyledStar, StyledThreeDots } from "./RandomPhotos.styles"
 export default class RandomPhotos extends React.Component {
     state = {
         photos: null,
         isLoading: false,
         hasError: false,
-        modalPhoto: null,
-        showModal: false,
+        showModal: -1,
         likedPhotos: []
     }
     setInStorage = (photo) => {
@@ -25,14 +26,8 @@ export default class RandomPhotos extends React.Component {
         }
     };
 
-    handleOpenModal = (i) => {
-        console.log(i);
-        this.setState({ modalPhoto: this.state.photos[i] })
-        this.setState({ showModal: true })
-    }
-
-    handleCloseModal = () => {
-        this.setState({ showModal: false })
+    handleModal = (i) => {
+        this.setState({ showModal: i })
     }
 
     handleLike = (photo) => {
@@ -56,56 +51,43 @@ export default class RandomPhotos extends React.Component {
         this.getPhotos();
     }
     render() {
-        const { photos, modalPhoto } = this.state;
+        const { photos, showModal } = this.state;
         return (
-            <Container>{photos && photos.map((photo, index) => {
-                return (
-                    <Post>
+            <InfiniteScroll dataLength={photos}
+                next={this.getPhotos}
+                hasMore={true}
+                loader={<h4>Loading...</h4>}>
 
-                        <TopWrapper>
-                            <StyledLink to={`/user/${photo.user.username}`}>
-                                <Avatar alt='' src={photo.user.profile_image.large} />
-                                <AuthorInfo>
-                                    <UserName>{photo.user.username}</UserName>
-                                    <Updated>{moment(Date.parse(photo.updated_at)).fromNow()}</Updated>
-                                </AuthorInfo>
-                            </StyledLink>
-                            <StyledThreeDots onClick={() => this.handleOpenModal(index)} />
-                        </TopWrapper>
-                        <PhotoDescription>{photo.description}</PhotoDescription>
-                        <PhotoWrapper>
-                            <Photo onClick={() => this.handleOpenModal(index)} alt={photo.alt_description} src={photo.urls.regular} />
-                        </PhotoWrapper>
-                        <Footer>
-                            <BrokenHeartIcon><StyledBrokenHeart />{photo.likes}</BrokenHeartIcon>
-                            <StyledStar onClick={() => this.handleLike(photo)} />
-                        </Footer>
-                    </Post>
-                )
-            })}
+                <Container>{photos && photos.map((photo, index) => {
+                    return (
 
-                {modalPhoto &&
-                    < StyledModal isOpen={this.state.showModal} contentLabel='photo'>
-                        <ModalContainer>
+                        <Post>
                             <TopWrapper>
-                                <StyledLink to={`/user/${modalPhoto.user.username}`} >
-                                    <Avatar alt='' src={modalPhoto.user.profile_image.large} />
+                                <StyledLink to={`/user/${photo.user.username}`}>
+                                    <Avatar alt='' src={photo.user.profile_image.large} />
                                     <AuthorInfo>
-                                        <UserName>{modalPhoto.user.username}</UserName>
-                                        <Updated>{moment(Date.parse(modalPhoto.updated_at)).fromNow()}</Updated>
+                                        <UserName>{photo.user.username}</UserName>
+                                        <Updated>{moment(Date.parse(photo.updated_at)).fromNow()}</Updated>
                                     </AuthorInfo>
                                 </StyledLink>
-                                <StyledCross onClick={this.handleCloseModal} />
+                                <StyledThreeDots onClick={() => this.handleModal(index)} />
                             </TopWrapper>
-                            <Photo alt={modalPhoto.alt_description} src={modalPhoto.urls.regular} />
-                            <Footer >
-                                <BrokenHeartIcon><StyledBrokenHeart />{modalPhoto.likes}</BrokenHeartIcon>
-                                <StyledStar />
+                            <PhotoDescription>{photo.description}</PhotoDescription>
+                            <PhotoWrapper>
+                                <Photo onClick={() => this.handleModal(index)} alt={photo.alt_description} src={photo.urls.regular} />
+                            </PhotoWrapper>
+                            <Footer>
+                                <BrokenHeartIcon><StyledBrokenHeart />{photo.likes}</BrokenHeartIcon>
+                                <StyledStar onClick={() => this.handleLike(photo)} />
                             </Footer>
-                        </ModalContainer>
+                        </Post>
 
-                    </StyledModal>}
-            </Container>
+                    )
+                })}
+                    {showModal > -1 && <Modal photo={photos[showModal]} showModal={showModal} handleModal={this.handleModal} />}
+                </Container>
+            </InfiniteScroll>
+
         )
 
     }

@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import Modal from "components/Modal";
 import { SearchPhotosContainer, LinksContainer, StyledLink, MasonryContainer, Column, ImageContainer, Image } from "./SearchPhotos.styles";
 
 
@@ -7,13 +8,17 @@ export default class SearchPhotos extends React.Component {
     state = {
         photos: null,
         isLoading: false,
-        hasError: false
+        hasError: false,
+        showModal: -1,
+        currentCol: -1,
+        currentPhoto: -1,
+        likedPhotos: []
 
     }
     getPhotos = async (searchTerm) => {
         this.setState({ isLoading: true });
         try {
-            const url = `${process.env.REACT_APP_ENDPOINT}/search/photos?per_page=12&order_by=latest&query=${searchTerm}&client_id=${process.env.REACT_APP_API_KEY}`
+            const url = `${process.env.REACT_APP_ENDPOINT}/search/photos?per_page=12&orientation=landscape&order_by=latest&query=${searchTerm}&client_id=${process.env.REACT_APP_API_KEY}`
             const { data } = await axios(url);
             let masonry = [[], [], []];
             for (let i = 0; i < 12; i++) {
@@ -24,7 +29,9 @@ export default class SearchPhotos extends React.Component {
             this.setState({ hasError: true, isLoading: false });
         }
     };
-
+    handleModal = (columnIndex, photoIndex) => {
+        this.setState({ showModal: columnIndex, currentCol: columnIndex, currentPhoto: photoIndex })
+    }
     componentDidMount() {
         this.getPhotos(this.props.match.params.searchTerm);
     }
@@ -37,7 +44,7 @@ export default class SearchPhotos extends React.Component {
     }
 
     render() {
-        const { photos } = this.state;
+        const { photos, showModal, currentCol, currentPhoto } = this.state;
         return (
             <SearchPhotosContainer>
                 <LinksContainer>
@@ -46,13 +53,13 @@ export default class SearchPhotos extends React.Component {
                 </LinksContainer>
                 <MasonryContainer>
                     {photos &&
-                        photos.map((column) => {
+                        photos.map((column, columnIndex) => {
                             return (
                                 <Column>
-                                    {column.map((photo) => {
+                                    {column.map((photo, photoIndex) => {
                                         return (
                                             <ImageContainer>
-                                                <Image alt={photo.alt_description} src={photo.urls.regular} />
+                                                <Image onClick={() => this.handleModal(columnIndex, photoIndex)} alt={photo.alt_description} src={photo.urls.regular} />
                                             </ImageContainer>
 
                                         );
@@ -61,7 +68,9 @@ export default class SearchPhotos extends React.Component {
                             );
                         })}
                 </MasonryContainer>
+                {showModal > -1 && <Modal photo={photos[currentCol][currentPhoto]} showModal={showModal} handleModal={this.handleModal} />}
             </SearchPhotosContainer>
+
 
         )
     }
