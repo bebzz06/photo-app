@@ -51,11 +51,7 @@ export default class RandomPhotos extends React.Component {
         this.getPhotos();
     }
     render() {
-<<<<<<< HEAD
         const { photos, showModal } = this.state;
-=======
-        const { photos, modalPhoto } = this.state;
->>>>>>> master
         return (
             <InfiniteScroll dataLength={photos}
                 next={this.getPhotos}
