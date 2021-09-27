@@ -1,8 +1,4 @@
 import styled from "styled-components";
-import BrokenHeart from "images/Iconly-Broken-Heart.svg";
-import Star from "images/Star.svg";
-import Cross from "images/Icon-metro-cross.svg"
-
 
 export const FavoritesContainer = styled.div`
 display: flex;
@@ -36,26 +32,4 @@ height: 100%;
 border-radius: 8px;
 object-fit: cover;
 `;
-export const BrokenHeartIcon = styled.div`
-display: flex;
-flex-direction: column;
-`
-export const StyledBrokenHeart = styled.div`
-background: url(${BrokenHeart}) no-repeat center center;
-width: 31px;
-height: 31px;
-cursor: pointer;
-`
-export const StyledStar = styled.div`
-background: url(${Star}) no-repeat center center;
-width: 31px;
-height: 31px;
-cursor: pointer;
-`
 
-export const StyledCross = styled.div`
-background: url(${Cross}) no-repeat center center;
-width: 31px;
-height: 31px;
-cursor: pointer;
-`
