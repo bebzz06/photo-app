@@ -1,9 +1,9 @@
 import moment from "moment";
 import { StyledModal, ModalContainer, TopWrapper, StyledLink, Avatar, AuthorInfo, UserName, Updated, StyledCross, Photo, Footer, BrokenHeartIcon, StyledBrokenHeart, StyledStar } from "./Modal.styles"
 
-export default function Modal({ photo, handleModal, showModal }) {
+export default function Modal({ photo, handleModal }) {
     return (
-        < StyledModal isOpen={showModal}>
+        < StyledModal>
             <ModalContainer>
                 <TopWrapper>
                     <StyledLink to={`/user/${photo.user.username}`} >

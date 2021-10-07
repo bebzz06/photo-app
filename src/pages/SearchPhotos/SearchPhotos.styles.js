@@ -5,6 +5,11 @@ export const SearchPhotosContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
+export const HeaderContainer = styled.div`
+display: flex;
+flex-direction: column;
+`
+
 export const LinksContainer = styled.div`
 display: flex;
 justify-content: center;

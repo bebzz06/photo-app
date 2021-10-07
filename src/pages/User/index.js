@@ -1,59 +1,94 @@
-import React from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
 import Modal from "components/Modal";
+import LoadingBar from "react-top-loading-bar";
+import { useState, useEffect, useRef } from "react";
 import { Container, Wrapper, ProfilePicture, InfoContainer, Name, PortfolioLink, Statistics, TotalPhotosWrapper, TotalPhotos, FollowersCountWrapper, FollowersCount, Label, MasonryContainer, Column, ImageContainer, Image } from "./User.styles";
 
-export default class User extends React.Component {
-    state = {
-        user: null,
-        isLoading: false,
-        hasError: false,
-        photoList: null,
-        showModal: -1,
-        currentCol: -1,
-        currentPhoto: -1,
-        likedPhotos: []
 
+export default function User(props) {
+    const [isLoading, setIsLoading] = useState(false);
+    const [hasError, setHasError] = useState(false);
+    const [photoList, setPhotoList] = useState(null);
+    const [user, setUser] = useState(null);
+    const [currentCol, setCurrentCol] = useState(-1);
+    const [currentPhoto, setCurrentPhoto] = useState(-1);
+    const [showModal, setShowModal] = useState(-1);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    // eslint-disable-next-line
+    const loadingBar = useRef();
+
+    function useLoadingBar(isLoading, loadingBar) {
+        useEffect(() => {
+            isLoading ? loadingBar.current.continuousStart() : loadingBar.current.complete();
+            // eslint-disable-next-line/exhaustive-deps
+        }, [isLoading])
     }
-    getUser = async (user) => {
-        this.setState({ isLoading: true });
+
+    const getUser = async () => {
+        setIsLoading(true);
         try {
-            const url = `${process.env.REACT_APP_ENDPOINT}/users/${user}?photos&client_id=${process.env.REACT_APP_API_KEY}`
+            const url = `${process.env.REACT_APP_ENDPOINT}/users/${props.match.params.username}?photos&client_id=${process.env.REACT_APP_API_KEY}`
             const { data } = await axios(url);
-            this.setState({ user: data });
+            setUser(data);
+            setIsLoading(false);
         } catch (err) {
-            this.setState({ hasError: true, isLoading: false });
+            setHasError(true);
+            setIsLoading(false);
         }
     };
-
-
-    componentDidMount() {
-        this.getUser(this.props.match.params.username);
-        this.getPhotos(this.props.match.params.username);
+    const getNextPage = () => {
+        setPage(page + 1);
     }
+    const getPhotos = async () => {
+        setIsLoading(true);
 
-    getPhotos = async (user) => {
-        this.setState({ isLoading: true });
         try {
-            const url = `${process.env.REACT_APP_ENDPOINT}/users/${user}/photos?&per_page=12&orientation=landscape&client_id=${process.env.REACT_APP_API_KEY}`
+            const url = `${process.env.REACT_APP_ENDPOINT}/users/${props.match.params.username}/photos?&per_page=12&page=${page}&orientation=landscape&client_id=${process.env.REACT_APP_API_KEY}`
             const { data } = await axios(url);
-            let masonry = [[], [], []];
-            for (let i = 0; i < 12; i++) {
-                masonry[i % 3].push(data[i]);
+            setHasMore(!!data.length);
+            if (photoList) {
+                const newPhotoList = [...photoList];
+                for (let i = 0; i < data.length; i++) {
+                    newPhotoList[i % 3].push(data[i]);
+                }
+                setPhotoList(newPhotoList);
+            } else {
+                const masonry = [[], [], []];
+                for (let i = 0; i < data.length; i++) {
+                    masonry[i % 3].push(data[i]);
+                }
+                setPhotoList(masonry);
             }
-            this.setState({ photoList: masonry });
+            setIsLoading(false);
         } catch (err) {
-            this.setState({ hasError: true, isLoading: false });
+            setHasError(true);
+            setIsLoading(false);
         }
     };
-    handleModal = (columnIndex, photoIndex) => {
-        this.setState({ showModal: columnIndex, currentCol: columnIndex, currentPhoto: photoIndex })
+
+    const handleModal = (columnIndex, photoIndex) => {
+        setShowModal(columnIndex);
+        setCurrentCol(columnIndex);
+        setCurrentPhoto(photoIndex);
     }
 
-    render() {
-        const { user, photoList, showModal, currentCol, currentPhoto } = this.state;
-        return (
-            <Container>
+    useEffect(() => {
+        getUser();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        getPhotos()
+        // eslint-disable-next-line/exhaustive-deps
+    }, [page])
+    useLoadingBar(isLoading, loadingBar)
+
+    return (
+        <Container>
+            <>
+                <LoadingBar color={'#80f'} ref={loadingBar} />
                 {user &&
                     <Wrapper>
                         <ProfilePicture alt='profile' src={user.profile_image.large} />
@@ -72,29 +107,31 @@ export default class User extends React.Component {
                             </Statistics>
                         </InfoContainer>
                     </Wrapper>}
-                <MasonryContainer>
-                    {photoList &&
-                        photoList.map((column, columnIndex) => {
-                            return (
-                                <Column>
-                                    {column.map((item, photoIndex) => {
-                                        return (
-                                            <ImageContainer>
-                                                <Image onClick={() => this.handleModal(columnIndex, photoIndex)} alt={item.alt_description} src={item.urls.regular} />
-                                            </ImageContainer>
-
-                                        );
-                                    })}
-                                </Column>
-                            );
-                        })}
-                </MasonryContainer>
-                {showModal > -1 && <Modal photo={photoList[currentCol][currentPhoto]} showModal={showModal} handleModal={this.handleModal} />}
-            </Container>
-
-
-
-
-        )
-    }
+                {user && photoList && < InfiniteScroll dataLength={photoList}
+                    next={getNextPage}
+                    hasMore={hasMore}
+                    loader={<LoadingBar />}
+                    endMessage={<h4>End of Photos</h4>}>
+                    <MasonryContainer >
+                        {
+                            photoList.map((column, columnIndex) => {
+                                return (
+                                    <Column>
+                                        {column.map((item, photoIndex) => {
+                                            return (
+                                                <ImageContainer>
+                                                    <Image onClick={() => handleModal(columnIndex, photoIndex)} alt={item.alt_description} src={item.urls.regular} />
+                                                </ImageContainer>
+                                            )
+                                        })}
+                                    </Column>
+                                );
+                            })}
+                    </MasonryContainer>
+                </InfiniteScroll>}
+                {showModal > -1 && <Modal photo={photoList[currentCol][currentPhoto]} showModal={showModal} handleModal={handleModal} />}
+                {hasError && <h1>ERROR</h1>}
+            </>
+        </Container >
+    )
 }

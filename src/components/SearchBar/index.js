@@ -1,36 +1,30 @@
-import React from "react";
+import { useState } from "react";
 import { withRouter } from "react-router";
 import { FormContainer, StyledInput, StyledBrokenSearch } from "./SearchBar.styles"
 
-class SearchBar extends React.Component {
-    state = {
-        searchTerm: ""
-    };
+function SearchBar(props) {
+    const [searchTerm, setSearchTerm] = useState("");
 
-    handleChange = (e) => {
-        this.setState({ searchTerm: e.target.value });
-    };
-
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.history.push(`/search/photos/${this.state.searchTerm}`)
-        this.setState({ searchTerm: "" });
-
-    };
-    render() {
-        return (
-            <FormContainer>
-                <StyledBrokenSearch />
-                <form onSubmit={this.handleSubmit}>
-                    <StyledInput
-                        onChange={this.handleChange}
-                        placeholder="Search..."
-                        value={this.state.searchTerm}
-                    />
-                </form>
-            </FormContainer>
-
-        );
+    const handleChange = (e) => {
+        setSearchTerm(e.target.value)
     }
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        props.history.push(`/search/photos/${searchTerm}`)
+        setSearchTerm("");
+    }
+    return (
+        <FormContainer>
+            <StyledBrokenSearch />
+            <form onSubmit={handleSubmit}>
+                <StyledInput
+                    onChange={handleChange}
+                    placeholder="Search..."
+                    value={searchTerm}
+                />
+            </form>
+        </FormContainer>
+    )
 }
+
 export default withRouter(SearchBar);

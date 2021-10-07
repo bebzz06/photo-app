@@ -1,10 +1,11 @@
 import styled from "styled-components";
+//import Button from "components/Button";
 import { Link } from "react-router-dom";
 
 export const CollectionContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+display: flex;
+flex-direction: column;
+justify-content: center;
 `;
 export const Header = styled.div`
 display: flex;
@@ -35,26 +36,25 @@ font-size: 15px;
 text-decoration: none;
 color: black;
 `
+
 export const TotalPhotos = styled.div`
-    color: rgb(123, 123, 123);
-    opacity: 0.39;
+color: rgb(123, 123, 123);
+opacity: 0.39;
 `
-export const Follow = styled.div`
-    width: 139px;
-    height: 49px;
-    background-color: rgb(24, 119, 242);
-    border-radius: 9px;
-    cursor: pointer;
-    text-decoration: none;
-    display: flex;
-    -webkit-box-pack: center;
-    justify-content: center;
-    -webkit-box-align: center;
-    align-items: center;
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
-`
+// export const StyledButton = styled(Button)`
+// width: 139px;
+// height: 49px;
+// background-color: rgb(24, 119, 242);
+// border-radius: 9px;
+// cursor: pointer;
+// display: flex;
+// justify-content: center;
+// align-items: center;
+// color: white;
+// font-weight: 600;
+// font-size: 14px;
+// `
+
 export const MasonryContainer = styled.div`
   display: flex;
   width: 928px;
