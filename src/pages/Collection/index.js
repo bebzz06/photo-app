@@ -2,9 +2,8 @@ import axios from 'axios';
 import InfiniteScroll from "react-infinite-scroll-component";
 import LoadingBar from "react-top-loading-bar";
 import Modal from "components/Modal";
-import Button from "components/Button";
 import { useState, useEffect, useRef } from "react";
-import { CollectionContainer, Header, CoverPhoto, Info, Title, StyledLink, TotalPhotos, MasonryContainer, Column, ImageContainer, Image } from "./Collection.styles";
+import { CollectionContainer, Header, CoverPhoto, Info, Title, StyledLink, TotalPhotos, StyledButton, MasonryContainer, Column, ImageContainer, Image } from "./Collection.styles";
 
 export default function Collection(props) {
     const [collection, setCollection] = useState(null);
@@ -97,7 +96,7 @@ export default function Collection(props) {
                     <Title>{collectionInfo.title}</Title>
                     <StyledLink to={`/user/${collectionInfo.user.username}`}>{`Author: ${collectionInfo.user.username}`}</StyledLink>
                     <TotalPhotos>{`${collectionInfo.total_photos} photos are found in this collection`}</TotalPhotos>
-                    <Button follow='Follow' unfollow='Unfollow' />
+                    <StyledButton>Follow</StyledButton>
                 </Info>
             </Header>}
             <InfiniteScroll dataLength={collection}
