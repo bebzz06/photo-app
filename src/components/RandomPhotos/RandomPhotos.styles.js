@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import BrokenHeart from "images/Iconly-Broken-Heart.svg";
 import Star from "images/Star.svg";
+import FilledStar from "images/FilledStar.svg"
 import ThreeDots from "images/ThreeDots.svg";
 import Cross from "images/Icon-metro-cross.svg"
 import { Link } from "react-router-dom";
@@ -111,7 +112,12 @@ width: 31px;
 height: 31px;
 cursor: pointer;
 `
-
+export const StyledFilledStar = styled.div`
+background: url(${FilledStar}) no-repeat center center;
+width: 31px;
+height: 31px;
+cursor: pointer;
+`
 
 export const StyledCross = styled.div`
 background: url(${Cross}) no-repeat center center;

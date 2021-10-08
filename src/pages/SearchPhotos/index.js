@@ -1,56 +1,102 @@
-import React from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
+import LoadingBar from "react-top-loading-bar";
 import axios from "axios";
 import Modal from "components/Modal";
-import { SearchPhotosContainer, LinksContainer, StyledLink, MasonryContainer, Column, ImageContainer, Image } from "./SearchPhotos.styles";
+import { useState, useEffect, useRef } from "react";
+import { SearchPhotosContainer, HeaderContainer, LinksContainer, StyledLink, MasonryContainer, Column, ImageContainer, Image } from "./SearchPhotos.styles";
 
+export default function SearchPhotos(props) {
+    const [photos, setPhotos] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [hasError, setHasError] = useState(false);
+    const [currentCol, setCurrentCol] = useState(-1);
+    const [currentPhoto, setCurrentPhoto] = useState(-1);
+    const [showModal, setShowModal] = useState(-1);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [totalPhotos, setTotalPhotos] = useState(null);
+    // eslint-disable-next-line
+    const loadingBar = useRef();
 
-export default class SearchPhotos extends React.Component {
-    state = {
-        photos: null,
-        isLoading: false,
-        hasError: false,
-        showModal: -1,
-        currentCol: -1,
-        currentPhoto: -1,
-        likedPhotos: []
-
+    function useLoadingBar(isLoading, loadingBar) {
+        useEffect(() => {
+            isLoading ? loadingBar.current.continuousStart() : loadingBar.current.complete();
+            // eslint-disable-next-line/exhaustive-deps
+        }, [isLoading])
     }
-    getPhotos = async (searchTerm) => {
-        this.setState({ isLoading: true });
+
+    const getNextPage = () => {
+        setPage(page + 1);
+    }
+    const getPhotos = async () => {
+        setIsLoading(true);
         try {
-            const url = `${process.env.REACT_APP_ENDPOINT}/search/photos?per_page=12&orientation=landscape&order_by=latest&query=${searchTerm}&client_id=${process.env.REACT_APP_API_KEY}`
+            const url = `${process.env.REACT_APP_ENDPOINT}/search/photos?per_page=12&page=${page}&orientation=landscape&order_by=latest&query=${props.match.params.searchTerm}&client_id=${process.env.REACT_APP_API_KEY}`
             const { data } = await axios(url);
-            let masonry = [[], [], []];
-            for (let i = 0; i < 12; i++) {
-                masonry[i % 3].push(data.results[i]);
+            setTotalPhotos(data.total)
+            setHasMore(!!data.results.length);
+            if (photos) {
+                const newPhotos = [...photos]
+                for (let i = 0; i < data.results.length; i++) {
+                    newPhotos[i % 3].push(data.results[i]);
+                }
+                setPhotos(newPhotos);
+            } else {
+                let masonry = [[], [], []];
+                for (let i = 0; i < data.results.length; i++) {
+                    masonry[i % 3].push(data.results[i]);
+                }
+                setPhotos(masonry);
             }
-            this.setState({ photos: masonry });
+            setIsLoading(false);
         } catch (err) {
-            this.setState({ hasError: true, isLoading: false });
+            setHasError(true);
+            setIsLoading(false);
         }
     };
-    handleModal = (columnIndex, photoIndex) => {
-        this.setState({ showModal: columnIndex, currentCol: columnIndex, currentPhoto: photoIndex })
-    }
-    componentDidMount() {
-        this.getPhotos(this.props.match.params.searchTerm);
+    const handleModal = (columnIndex, photoIndex) => {
+        setShowModal(columnIndex);
+        setCurrentCol(columnIndex);
+        setCurrentPhoto(photoIndex);
     }
 
-    componentDidUpdate(prevProps) {
+    useEffect(() => {
+        getPhotos()
+        // eslint-disable-next-line/exhaustive-deps
+    }, [page]);
 
-        if (this.props.match.params.searchTerm !== prevProps.match.params.searchTerm) {
-            this.getPhotos(this.props.match.params.searchTerm)
+    useEffect(() => {
+        setPhotos(null);
+        setPage(1);
+        // eslint-disable-next-line/exhaustive-deps
+
+    }, [props.match.params.searchTerm])
+
+    useEffect(() => {
+        if (photos === null && page === 1) {
+            getPhotos();
+            // eslint-disable-next-line/exhaustive-deps
         }
-    }
+    }, [photos, page])
 
-    render() {
-        const { photos, showModal, currentCol, currentPhoto } = this.state;
-        return (
-            <SearchPhotosContainer>
-                <LinksContainer>
-                    <StyledLink to={`/search/photos/${this.props.match.params.searchTerm}`}>Photos </StyledLink>
-                    <StyledLink to={`/search/collections/${this.props.match.params.searchTerm}`}> Collections</StyledLink>
-                </LinksContainer>
+    useLoadingBar(isLoading, loadingBar);
+
+    return (
+        <SearchPhotosContainer>
+            <HeaderContainer>
+                <div>{`Search results for "${props.match.params.searchTerm}"`}</div>
+                <div>{totalPhotos} photos were found</div>
+            </HeaderContainer>
+            <LinksContainer>
+                <StyledLink to={`/search/photos/${props.match.params.searchTerm}`}>Photos </StyledLink>
+                <StyledLink to={`/search/collections/${props.match.params.searchTerm}`}> Collections</StyledLink>
+            </LinksContainer>
+            <LoadingBar color={'#80f'} ref={loadingBar} />
+            <InfiniteScroll dataLength={photos}
+                next={getNextPage}
+                hasMore={hasMore}
+                loader={<LoadingBar />}
+                endMessage={<h4>End of Photos</h4>}>
                 <MasonryContainer>
                     {photos &&
                         photos.map((column, columnIndex) => {
@@ -59,7 +105,7 @@ export default class SearchPhotos extends React.Component {
                                     {column.map((photo, photoIndex) => {
                                         return (
                                             <ImageContainer>
-                                                <Image onClick={() => this.handleModal(columnIndex, photoIndex)} alt={photo.alt_description} src={photo.urls.regular} />
+                                                <Image onClick={() => handleModal(columnIndex, photoIndex)} alt={photo.alt_description} src={photo.urls.regular} />
                                             </ImageContainer>
 
                                         );
@@ -68,10 +114,10 @@ export default class SearchPhotos extends React.Component {
                             );
                         })}
                 </MasonryContainer>
-                {showModal > -1 && <Modal photo={photos[currentCol][currentPhoto]} showModal={showModal} handleModal={this.handleModal} />}
-            </SearchPhotosContainer>
+            </InfiniteScroll>
+            {showModal > -1 && <Modal photo={photos[currentCol][currentPhoto]} showModal={showModal} handleModal={handleModal} />}
+            {hasError && <h1>ERROR</h1>}
+        </SearchPhotosContainer>
+    )
 
-
-        )
-    }
 }

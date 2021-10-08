@@ -1,62 +1,72 @@
-import React from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
-import { MasonryContainer, ExploreContainer, Column, ImageContainer, Image } from "./Explore.styles";
 import Modal from "components/Modal";
+import LoadingBar from "react-top-loading-bar";
+import { useState, useEffect, useRef } from "react";
+import { MasonryContainer, ExploreContainer, Column, ImageContainer, Image } from "./Explore.styles";
 
-export default class Explore extends React.Component {
-    state = {
-        photos: null,
-        isLoading: false,
-        hasError: false,
-        currentCol: -1,
-        currentPhoto: -1,
-        showModal: -1,
-        likedPhotos: []
-    };
 
-    setInStorage = (photo) => {
-        localStorage.setItem("liked", JSON.stringify(photo))
+export default function Explore() {
+    const [photos, setPhotos] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [hasError, setHasError] = useState(false);
+    const [currentCol, setCurrentCol] = useState(-1);
+    const [currentPhoto, setCurrentPhoto] = useState(-1);
+    const [showModal, setShowModal] = useState(-1);
+    // eslint-disable-next-line
+    const loadingBar = useRef();
+
+    function useLoadingBar(isLoading, loadingBar) {
+        useEffect(() => {
+            isLoading ? loadingBar.current.continuousStart() : loadingBar.current.complete();
+            // eslint-disable-next-line/exhaustive-deps
+        }, [isLoading])
     }
-
-    getPhotos = async () => {
-        this.setState({ isLoading: true });
+    const getPhotos = async () => {
+        setIsLoading(true);
         try {
             const url = `${process.env.REACT_APP_ENDPOINT}/photos/random?count=12&orientation=landscape&order_by=latest&client_id=${process.env.REACT_APP_API_KEY}`
             const { data } = await axios(url);
-            let masonry = [[], [], []];
-            for (let i = 0; i < 12; i++) {
-                masonry[i % 3].push(data[i]);
+            if (photos) {
+                let newPhotos = [...photos]
+                for (let i = 0; i < data.length; i++) {
+                    newPhotos[i % 3].push(data[i]);
+                }
+                setPhotos(newPhotos);
             }
-            this.setState({ photos: masonry });
+            else {
+                let masonry = [[], [], []];
+                for (let i = 0; i < data.length; i++) {
+                    masonry[i % 3].push(data[i]);
+                }
+                setPhotos(masonry);
+            }
+            setIsLoading(false);
+
         } catch (err) {
-            this.setState({ hasError: true, isLoading: false });
+            setHasError(true);
+            setIsLoading(false);
         }
-    };
-    handleModal = (columnIndex, photoIndex) => {
-        this.setState({ showModal: columnIndex, currentCol: columnIndex, currentPhoto: photoIndex })
+    }
+    const handleModal = (columnIndex, photoIndex) => {
+        setShowModal(columnIndex);
+        setCurrentCol(columnIndex);
+        setCurrentPhoto(photoIndex);
     }
 
-    handleLike = (photo) => {
-        const likedPhotos = this.state.likedPhotos
-        const isDuplicate = likedPhotos.some((likedPhoto) => likedPhoto.id === photo.id)
-        if (isDuplicate) return;
-        const photos = [...this.state.likedPhotos, photo];
-        const newPhotos = photos.filter((photo) => {
-            if (photo.liked_by_user === false) {
-                photo.liked_by_user = !photo.liked_by_user
-            }
-            return photo
-        });
-        this.setState({ likedPhotos: newPhotos })
-        this.setInStorage(newPhotos);
-    }
+    useEffect(() => {
+        getPhotos();
+        // eslint-disable-next-line/exhaustive-deps
+    }, [])
 
-    componentDidMount() {
-        this.getPhotos();
-    }
-    render() {
-        const { photos, showModal, currentCol, currentPhoto } = this.state;
-        return (
+    useLoadingBar(isLoading, loadingBar);
+    return (
+        <InfiniteScroll
+            dataLength={photos}
+            next={getPhotos}
+            hasMore={true}
+            loader={<LoadingBar />}>
+            <LoadingBar color={'#80f'} ref={loadingBar} />
             <ExploreContainer>
                 <MasonryContainer>
                     {photos &&
@@ -66,7 +76,7 @@ export default class Explore extends React.Component {
                                     {column.map((photo, photoIndex) => {
                                         return (
                                             <ImageContainer>
-                                                <Image onClick={() => this.handleModal(columnIndex, photoIndex)} alt={photo.alt_description} src={photo.urls.regular} />
+                                                <Image onClick={() => handleModal(columnIndex, photoIndex)} alt={photo.alt_description} src={photo.urls.regular} />
                                             </ImageContainer>
                                         );
                                     })}
@@ -74,9 +84,10 @@ export default class Explore extends React.Component {
                             );
                         })}
                 </MasonryContainer>
-                {showModal > -1 && <Modal photo={photos[currentCol][currentPhoto]} showModal={showModal} handleModal={this.handleModal} />}
-
+                {showModal > -1 && <Modal photo={photos[currentCol][currentPhoto]} showModal={showModal} handleModal={handleModal} />}
             </ExploreContainer>
-        );
-    }
+            {hasError && <h1>ERROR</h1>}
+        </InfiniteScroll>
+
+    )
 }
