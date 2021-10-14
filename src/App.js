@@ -1,10 +1,9 @@
 import React from "react";
-import { TopNav } from "components";
 import styled from "styled-components";
+import { TopNav } from "components";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Home, Collection, Explore, Favorites, SearchCollections, SearchPhotos, User } from "pages";
 import { createGlobalStyle } from "styled-components";
-
 
 const GlobalStyle = createGlobalStyle`
 
@@ -42,3 +41,4 @@ export default function App() {
     </Router>
   );
 }
+

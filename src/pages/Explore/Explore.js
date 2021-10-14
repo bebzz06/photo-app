@@ -1,19 +1,13 @@
 import InfiniteScroll from "react-infinite-scroll-component";
-import axios from "axios";
 import LoadingBar from "react-top-loading-bar";
 import { Modal } from "components";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { MasonryContainer, ExploreContainer, Column, ImageContainer, Image } from "./Explore.styles";
+import { connect } from "react-redux";
+import { getPhotos, handleMasonryModal, resetState } from "../../store/randomPhotos/randomPhotosActions";
 
+function Explore({ randomPhotos, isLoading, hasError, showMasonryModal, getPhotos, handleMasonryModal, resetState }) {
 
-export default function Explore() {
-    const [photos, setPhotos] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [hasError, setHasError] = useState(false);
-    const [currentCol, setCurrentCol] = useState(-1);
-    const [currentPhoto, setCurrentPhoto] = useState(-1);
-    const [showModal, setShowModal] = useState(-1);
-    // eslint-disable-next-line
     const loadingBar = useRef();
 
     function useLoadingBar(isLoading, loadingBar) {
@@ -22,72 +16,62 @@ export default function Explore() {
             // eslint-disable-next-line/exhaustive-deps
         }, [isLoading])
     }
-    const getPhotos = async () => {
-        setIsLoading(true);
-        try {
-            const url = `${process.env.REACT_APP_ENDPOINT}/photos/random?count=12&orientation=landscape&order_by=latest&client_id=${process.env.REACT_APP_API_KEY}`
-            const { data } = await axios(url);
-            if (photos) {
-                let newPhotos = [...photos]
-                for (let i = 0; i < data.length; i++) {
-                    newPhotos[i % 3].push(data[i]);
-                }
-                setPhotos(newPhotos);
-            }
-            else {
-                let masonry = [[], [], []];
-                for (let i = 0; i < data.length; i++) {
-                    masonry[i % 3].push(data[i]);
-                }
-                setPhotos(masonry);
-            }
-            setIsLoading(false);
 
-        } catch (err) {
-            setHasError(true);
-            setIsLoading(false);
-        }
-    }
-    const handleModal = (columnIndex, photoIndex) => {
-        setShowModal(columnIndex);
-        setCurrentCol(columnIndex);
-        setCurrentPhoto(photoIndex);
+    let masonry = [[], [], []];
+    for (let i = 0; i < randomPhotos.length; i++) {
+        masonry[i % 3].push(randomPhotos[i]);
     }
 
     useEffect(() => {
         getPhotos();
+        return function cleaningState() {
+            resetState();
+        }
         // eslint-disable-next-line/exhaustive-deps
-    }, [])
+    }, []);
 
     useLoadingBar(isLoading, loadingBar);
     return (
         <InfiniteScroll
-            dataLength={photos}
+            dataLength={masonry}
             next={getPhotos}
             hasMore={true}
             loader={<LoadingBar />}>
             <LoadingBar color={'#80f'} ref={loadingBar} />
             <ExploreContainer>
                 <MasonryContainer>
-                    {photos &&
-                        photos.map((column, columnIndex) => {
-                            return (
-                                <Column>
-                                    {column.map((photo, photoIndex) => {
-                                        return (
-                                            <ImageContainer>
-                                                <Image onClick={() => handleModal(columnIndex, photoIndex)} alt={photo.alt_description} src={photo.urls.regular} />
-                                            </ImageContainer>
-                                        );
-                                    })}
-                                </Column>
-                            );
-                        })}
+                    {masonry.map((column, columnIndex) => {
+                        return (
+                            <Column>
+                                {column.map((photo, photoIndex) => {
+                                    return (
+                                        <ImageContainer>
+                                            <Image onClick={() => handleMasonryModal(columnIndex, photoIndex)} alt={photo.alt_description} src={photo.urls.regular} />
+                                        </ImageContainer>
+                                    );
+                                })}
+                            </Column>
+                        );
+                    })}
                 </MasonryContainer>
-                {showModal > -1 && <Modal photo={photos[currentCol][currentPhoto]} showModal={showModal} handleModal={handleModal} />}
+                {showMasonryModal.currentCol > -1 && <Modal photo={masonry[showMasonryModal.currentCol][showMasonryModal.currentPhoto]} showModal={showMasonryModal.currentCol} handleModal={handleMasonryModal} />}
             </ExploreContainer>
             {hasError && <h1>ERROR</h1>}
         </InfiniteScroll>
 
     )
 }
+
+const mapStateToProps = (state) => ({
+    randomPhotos: state.randomPhotos.photos,
+    isLoading: state.randomPhotos.isLoading,
+    hasError: state.randomPhotos.hasError,
+    showMasonryModal: state.randomPhotos.showMasonryModal
+})
+const mapDispatchToProps = {
+    getPhotos,
+    handleMasonryModal,
+    resetState
+
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Explore);

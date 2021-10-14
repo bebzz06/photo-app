@@ -1,17 +1,19 @@
-import axios from "axios";
 import moment from "moment";
 import InfiniteScroll from "react-infinite-scroll-component";
 import LoadingBar from "react-top-loading-bar";
 import { Modal } from "components";
 import { useState, useEffect, useRef } from "react";
-import { Container, Post, TopWrapper, StyledLink, Avatar, AuthorInfo, UserName, Updated, PhotoDescription, PhotoWrapper, Photo, Footer, BrokenHeartIcon, StyledBrokenHeart, StyledStar, StyledThreeDots } from "./RandomPhotos.styles"
+import {
+    Container, Post, TopWrapper, StyledLink, Avatar, AuthorInfo,
+    UserName, Updated, PhotoDescription, PhotoWrapper, Photo, Footer, BrokenHeartIcon,
+    StyledBrokenHeart, StyledStar, StyledThreeDots
+} from "./RandomPhotos.styles"
+import { connect } from "react-redux";
+import { getPhotos, handleModal, resetState } from "../../store/randomPhotos/randomPhotosActions";
 
 
-export default function RandomPhotos() {
-    const [photos, setPhotos] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [hasError, setHasError] = useState(false);
-    const [showModal, setShowModal] = useState(-1);
+function RandomPhotos({ randomPhotos, isLoading, hasError, showModal, getPhotos, handleModal, resetState }) {
+
     const [likedPhotos, setLikedPhotos] = useState([]);
     // eslint-disable-next-line
     const loadingBar = useRef();
@@ -23,26 +25,10 @@ export default function RandomPhotos() {
         }, [isLoading])
     }
 
-
     const setInStorage = (photo) => {
         localStorage.setItem("liked", JSON.stringify(photo))
     }
-    const getPhotos = async () => {
-        setIsLoading(true);
-        try {
-            const url = `${process.env.REACT_APP_ENDPOINT}/photos/random?count=12&orientation=landscape&client_id=${process.env.REACT_APP_API_KEY}`
-            const { data } = await axios(url);
-            !photos ? setPhotos(data) : setPhotos([...photos, ...data]);
-            setIsLoading(false);
-        } catch (err) {
-            setHasError(true);
-            setIsLoading(false);
-        }
 
-    }
-    const handleModal = (i) => {
-        setShowModal(i);
-    }
     const handleLike = (photo, i) => {
         //check for duplicate
         const liked = likedPhotos
@@ -62,19 +48,22 @@ export default function RandomPhotos() {
     }
     useEffect(() => {
         getPhotos();
+        return function cleaningState() {
+            resetState();
+        }
         // eslint-disable-next-line/exhaustive-deps
-    }, [])
+    }, []);
 
     useLoadingBar(isLoading, loadingBar);
+
     return (
-        <InfiniteScroll dataLength={photos}
+        <InfiniteScroll dataLength={randomPhotos}
             next={getPhotos}
             hasMore={true}
             loader={<LoadingBar />}>
             <LoadingBar color={'#80f'} ref={loadingBar} />
-            <Container>{photos && photos.map((photo, index) => {
+            <Container>{randomPhotos.map((photo, index) => {
                 return (
-
                     <Post>
                         <TopWrapper>
                             <StyledLink to={`/user/${photo.user.username}`}>
@@ -97,9 +86,22 @@ export default function RandomPhotos() {
                     </Post>
                 )
             })}
-                {showModal > -1 && <Modal photo={photos[showModal]} handleModal={handleModal} />}
+                {showModal > -1 && <Modal photo={randomPhotos[showModal]} handleModal={handleModal} />}
             </Container>
             {hasError && <h1>ERROR</h1>}
         </InfiniteScroll>
     )
 }
+
+const mapStateToProps = (state) => ({
+    randomPhotos: state.randomPhotos.photos,
+    isLoading: state.randomPhotos.isLoading,
+    hasError: state.randomPhotos.hasError,
+    showModal: state.randomPhotos.showModal
+})
+const mapDispatchToProps = {
+    getPhotos,
+    handleModal,
+    resetState
+}
+export default connect(mapStateToProps, mapDispatchToProps)(RandomPhotos);
