@@ -1,15 +1,9 @@
 import React from "react";
-import Home from "pages/Home";
-import SearchPhotos from "pages/SearchPhotos";
-import SearchCollections from "pages/SearchCollections";
-import Explore from "pages/Explore";
-import User from "pages/User";
-import Favorites from "pages/Favorites";
-import Collection from "pages/Collection";
-import TopNav from "components/TopNav";
 import styled from "styled-components";
-import { createGlobalStyle } from "styled-components";
+import { TopNav } from "components";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Home, Collection, Explore, Favorites, SearchCollections, SearchPhotos, User } from "pages";
+import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
 
@@ -47,3 +41,4 @@ export default function App() {
     </Router>
   );
 }
+
