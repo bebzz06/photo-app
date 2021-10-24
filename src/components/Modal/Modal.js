@@ -12,7 +12,7 @@ function Modal({ photo, handleModal, likedPhotos, handleLike }) {
                 <ModalContainer>
                     <TopWrapper>
                         <StyledLink to={`/user/${photo.user.username}`} >
-                            <Avatar alt='' src={photo.user.profile_image.large} />
+                            <Avatar alt={photo.user.username} src={photo.user.profile_image.large} />
                             <AuthorInfo>
                                 <UserName>{photo.user.username}</UserName>
                                 <Updated>{moment(Date.parse(photo.updated_at)).fromNow()}</Updated>

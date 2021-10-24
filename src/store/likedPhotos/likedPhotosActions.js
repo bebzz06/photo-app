@@ -5,8 +5,11 @@ export const handleFavorites = (photo) => (dispatch, getState) => {
         const favorites = getState().likedPhotos.photos
         const newFavorites = { ...favorites }
         const key = photo.id
-        !favorites[key] ? newFavorites[key] = photo : delete newFavorites[key];
-
+        if (!favorites[key]) {
+            newFavorites[key] = photo
+        } else {
+            delete newFavorites[key];
+        }
         dispatch({
             type: FETCH_FAVORITES_PHOTO_SUCCESS,
             payload: newFavorites
