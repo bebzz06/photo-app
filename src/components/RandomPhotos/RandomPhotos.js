@@ -2,20 +2,18 @@ import moment from "moment";
 import InfiniteScroll from "react-infinite-scroll-component";
 import LoadingBar from "react-top-loading-bar";
 import { Modal } from "components";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import {
     Container, Post, TopWrapper, StyledLink, Avatar, AuthorInfo,
     UserName, Updated, PhotoDescription, PhotoWrapper, Photo, Footer, BrokenHeartIcon,
-    StyledBrokenHeart, StyledStar, StyledThreeDots
+    StyledBrokenHeart, StyledStar, StyledFilledStar, StyledThreeDots
 } from "./RandomPhotos.styles"
 import { connect } from "react-redux";
-import { getPhotos, handleModal, resetState } from "../../store/randomPhotos/randomPhotosActions";
+import { getPhotos, handleModal, resetState, handleLike } from "../../store/randomPhotos/randomPhotosActions";
 
 
-function RandomPhotos({ randomPhotos, isLoading, hasError, showModal, getPhotos, handleModal, resetState }) {
+function RandomPhotos({ randomPhotos, isLoading, hasError, showModal, getPhotos, handleModal, resetState, handleLike, likedPhotos }) {
 
-    const [likedPhotos, setLikedPhotos] = useState([]);
-    // eslint-disable-next-line
     const loadingBar = useRef();
 
     function useLoadingBar(isLoading, loadingBar) {
@@ -25,27 +23,7 @@ function RandomPhotos({ randomPhotos, isLoading, hasError, showModal, getPhotos,
         }, [isLoading])
     }
 
-    const setInStorage = (photo) => {
-        localStorage.setItem("liked", JSON.stringify(photo))
-    }
-
-    const handleLike = (photo, i) => {
-        //check for duplicate
-        const liked = likedPhotos
-        const isDuplicate = liked.some((likedPhoto) => likedPhoto.id === photo.id)
-        if (isDuplicate) return;
-        //set photo as liked
-        const photos = [...likedPhotos, photo];
-        const newPhotos = photos.filter((photo) => {
-            if (photo.liked_by_user === false) {
-                photo.liked_by_user = !photo.liked_by_user
-            }
-            return photo
-        });
-        setLikedPhotos(newPhotos);
-        setInStorage(newPhotos);
-
-    }
+    // 
     useEffect(() => {
         getPhotos();
         return function cleaningState() {
@@ -55,7 +33,6 @@ function RandomPhotos({ randomPhotos, isLoading, hasError, showModal, getPhotos,
     }, []);
 
     useLoadingBar(isLoading, loadingBar);
-
     return (
         <InfiniteScroll dataLength={randomPhotos}
             next={getPhotos}
@@ -81,7 +58,9 @@ function RandomPhotos({ randomPhotos, isLoading, hasError, showModal, getPhotos,
                         </PhotoWrapper>
                         <Footer>
                             <BrokenHeartIcon><StyledBrokenHeart />{photo.likes}</BrokenHeartIcon>
-                            <StyledStar onClick={() => handleLike(photo)} />
+                            <div onClick={() => handleLike(photo)}>
+                                {likedPhotos[photo.id] ? <StyledFilledStar /> : <StyledStar />}
+                            </div>
                         </Footer>
                     </Post>
                 )
@@ -97,11 +76,13 @@ const mapStateToProps = (state) => ({
     randomPhotos: state.randomPhotos.photos,
     isLoading: state.randomPhotos.isLoading,
     hasError: state.randomPhotos.hasError,
-    showModal: state.randomPhotos.showModal
+    showModal: state.randomPhotos.showModal,
+    likedPhotos: state.likedPhotos.photos
 })
 const mapDispatchToProps = {
     getPhotos,
     handleModal,
-    resetState
+    resetState,
+    handleLike
 }
 export default connect(mapStateToProps, mapDispatchToProps)(RandomPhotos);

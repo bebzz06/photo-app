@@ -1,5 +1,6 @@
 import axios from "axios";
 import { RANDOM_PHOTOS_FETCH_PHOTOS_SUCCESS, RANDOM_PHOTOS_FETCH_PHOTOS_PENDING, RANDOM_PHOTOS_FETCH_PHOTOS_ERROR, RANDOM_PHOTOS_SHOW_MODAL, RANDOM_PHOTOS_SHOW_MASONRY_MODAL, RANDOM_PHOTOS_RESET_STATE } from "./randomPhotosReducer";
+import { handleFavorites } from "../likedPhotos/likedPhotosActions";
 
 export const getPhotos = () => async (dispatch) => {
 
@@ -41,4 +42,10 @@ export const resetState = () => (dispatch) => {
     dispatch({
         type: RANDOM_PHOTOS_RESET_STATE
     })
+}
+
+export const handleLike = (photo) => (dispatch) => {
+    dispatch(
+        handleFavorites(photo)
+    )
 }
