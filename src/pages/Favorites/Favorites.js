@@ -1,75 +1,57 @@
-import LoadingBar from "react-top-loading-bar";
 import { Modal } from "components";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { FavoritesContainer, MasonryContainer, Column, ImageContainer, Image } from "./Favorites.styles";
+import { connect } from "react-redux";
 
-export default function Favorites() {
-    const [likedPhotos, setLikedPhotos] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [hasError, setHasError] = useState(false);
+function Favorites({ likedPhotos, hasError }) {
     const [currentCol, setCurrentCol] = useState(-1);
     const [currentPhoto, setCurrentPhoto] = useState(-1);
     const [showModal, setShowModal] = useState(-1);
     // eslint-disable-next-line
-    const loadingBar = useRef();
 
-    function useLoadingBar(isLoading, loadingBar) {
-        useEffect(() => {
-            isLoading ? loadingBar.current.continuousStart() : loadingBar.current.complete();
-            // eslint-disable-next-line/exhaustive-deps
-        }, [isLoading])
-    }
-
-    const getFromStorage = async () => {
-        setIsLoading(true);
-        try {
-            const photos = JSON.parse(localStorage.getItem("liked"))
-            let masonry = [[], [], []];
-            for (let i = 0; i < 12; i++) {
-                masonry[i % 3].push(photos[i]);
-            }
-            setLikedPhotos(masonry || [])
-            setIsLoading(false);
-        } catch (err) {
-            setHasError(true);
-            setIsLoading(false);
-        }
-    }
     const handleModal = (columnIndex, photoIndex) => {
         setShowModal(columnIndex);
         setCurrentCol(columnIndex);
         setCurrentPhoto(photoIndex);
     }
 
-    useEffect(() => {
-        getFromStorage();
-        // eslint-disable-next-line/exhaustive-deps
-    }, [])
-
-    useLoadingBar(isLoading, loadingBar)
+    let newPhotos = Object.values(likedPhotos)
+    let masonry = [[], [], []];
+    for (let i = 0; i < newPhotos.length; i++) {
+        masonry[i % 3].push(newPhotos[i]);
+    }
 
     return (
         <FavoritesContainer>
-            <LoadingBar color={'#80f'} ref={loadingBar} />
-            <div>Saved Photos</div>
-            <MasonryContainer>
-                {likedPhotos && likedPhotos.map((column, columnIndex) => {
-                    return (
-                        <Column>
-                            {column.map((photo, photoIndex) => {
-                                return (
-                                    <ImageContainer>
-                                        <Image onClick={() => { handleModal(columnIndex, photoIndex) }} alt={photo.alt_description} src={photo.urls.regular} />
-                                    </ImageContainer>
-                                )
-                            })}
-                        </Column>
-                    )
-                })}
-            </MasonryContainer>
+            {!masonry[0].length ? 'Click on the star to save your favorite photos!' :
+                <MasonryContainer>
+                    {likedPhotos && masonry.map((column, columnIndex) => {
+                        return (
+                            <Column>
+                                {column.map((photo, photoIndex) => {
+                                    return (
+                                        <ImageContainer>
+                                            <Image onClick={() => { handleModal(columnIndex, photoIndex) }} alt={photo.alt_description} src={photo.urls.regular} />
+                                        </ImageContainer>
+                                    )
+                                })}
+                            </Column>
+                        )
+                    })}
+                </MasonryContainer>
+            }
             {showModal > -1 &&
-                < Modal photo={likedPhotos[currentCol][currentPhoto]} showModal={showModal} handleModal={handleModal} />}
+                < Modal photo={masonry[currentCol][currentPhoto]} showModal={showModal} handleModal={handleModal} />}
             {hasError && <h1>ERROR</h1>}
         </FavoritesContainer>
     )
 }
+
+const mapStateToProps = (state) => ({
+    likedPhotos: state.likedPhotos.photos,
+    hasError: state.likedPhotos.hasError
+})
+const mapDispatchToProps = {
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Favorites)
