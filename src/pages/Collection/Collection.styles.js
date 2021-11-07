@@ -40,19 +40,7 @@ export const TotalPhotos = styled.div`
 color: rgb(123, 123, 123);
 opacity: 0.39;
 `
-export const StyledButton = styled.div`
-width: 139px;
-height: 49px;
-background-color: rgb(24, 119, 242);
-border-radius: 9px;
-cursor: pointer;
-display: flex;
-justify-content: center;
-align-items: center;
-color: white;
-font-weight: 600;
-font-size: 14px;
-`
+
 export const MasonryContainer = styled.div`
   display: flex;
   width: 928px;
@@ -74,6 +62,7 @@ position: relative;
 margin-bottom: 28px;
 max-width: 100%;
 min-height: 325px;
+cursor: pointer;
 `
 export const Image = styled.img`
   width: 100%;

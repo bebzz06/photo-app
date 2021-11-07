@@ -1,29 +1,20 @@
 import moment from "moment";
 import InfiniteScroll from "react-infinite-scroll-component";
 import LoadingBar from "react-top-loading-bar";
-import { Modal } from "components";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
+import { connect } from "react-redux";
 import {
     Container, Post, TopWrapper, StyledLink, Avatar, AuthorInfo,
     UserName, Updated, PhotoDescription, PhotoWrapper, Photo, Footer, BrokenHeartIcon,
     StyledBrokenHeart, StyledStar, StyledFilledStar, StyledThreeDots
 } from "./RandomPhotos.styles"
-import { connect } from "react-redux";
+import { Modal } from "components";
 import { getPhotos, handleModal, resetState, handleLike } from "../../store/randomPhotos/randomPhotosActions";
+import { useLoadingBar } from "utils"
 
 
 function RandomPhotos({ randomPhotos, isLoading, hasError, showModal, getPhotos, handleModal, resetState, handleLike, likedPhotos }) {
 
-    const loadingBar = useRef();
-
-    function useLoadingBar(isLoading, loadingBar) {
-        useEffect(() => {
-            isLoading ? loadingBar.current.continuousStart() : loadingBar.current.complete();
-            // eslint-disable-next-line/exhaustive-deps
-        }, [isLoading])
-    }
-
-    // 
     useEffect(() => {
         getPhotos();
         return function cleaningState() {
@@ -32,7 +23,7 @@ function RandomPhotos({ randomPhotos, isLoading, hasError, showModal, getPhotos,
         // eslint-disable-next-line/exhaustive-deps
     }, []);
 
-    useLoadingBar(isLoading, loadingBar);
+    const { loadingBar } = useLoadingBar(isLoading);
     return (
         <InfiniteScroll dataLength={randomPhotos}
             next={getPhotos}

@@ -1,3 +1,6 @@
+import { RANDOM_PHOTOS_FETCH_PHOTOS_PENDING, RANDOM_PHOTOS_FETCH_PHOTOS_SUCCESS, RANDOM_PHOTOS_FETCH_PHOTOS_ERROR, RANDOM_PHOTOS_SHOW_MODAL, RANDOM_PHOTOS_SHOW_MASONRY_MODAL, RANDOM_PHOTOS_RESET_STATE } from "store/action-types";
+
+
 const initialState = {
     photos: [],
     isLoading: false,
@@ -6,15 +9,10 @@ const initialState = {
     showMasonryModal: { currentCol: -1, currentPhoto: -1 }
 }
 
-export const RANDOM_PHOTOS_FETCH_PHOTOS_SUCCESS = 'RANDOM_PHOTOS_FETCH_PHOTOS_SUCCESS';
-export const RANDOM_PHOTOS_FETCH_PHOTOS_PENDING = 'RANDOM_PHOTOS_FETCH_PHOTOS_PENDING';
-export const RANDOM_PHOTOS_FETCH_PHOTOS_ERROR = 'RANDOM_PHOTOS_FETCH_PHOTOS_ERROR';
-export const RANDOM_PHOTOS_SHOW_MODAL = 'RANDOM_PHOTOS_SHOW_MODAL';
-export const RANDOM_PHOTOS_SHOW_MASONRY_MODAL = 'RANDOM_PHOTOS_SHOW_MASONRY_MODAL';
-export const RANDOM_PHOTOS_RESET_STATE = 'RANDOM_PHOTOS_RESET_STATE';
+
 
 function randomPhotosReducer(state = initialState, action) {
-    //console.log(action, 'action');
+
     switch (action.type) {
         case RANDOM_PHOTOS_FETCH_PHOTOS_PENDING:
             return {

@@ -1,10 +1,10 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
 import LoadingBar from "react-top-loading-bar";
-import { Modal } from "components";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Container, Wrapper, ProfilePicture, InfoContainer, Name, PortfolioLink, Statistics, TotalPhotosWrapper, TotalPhotos, FollowersCountWrapper, FollowersCount, Label, MasonryContainer, Column, ImageContainer, Image } from "./User.styles";
-
+import { useLoadingBar } from "utils";
+import { Modal } from "components";
 
 export default function User(props) {
     const [isLoading, setIsLoading] = useState(false);
@@ -17,14 +17,7 @@ export default function User(props) {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     // eslint-disable-next-line
-    const loadingBar = useRef();
 
-    function useLoadingBar(isLoading, loadingBar) {
-        useEffect(() => {
-            isLoading ? loadingBar.current.continuousStart() : loadingBar.current.complete();
-            // eslint-disable-next-line/exhaustive-deps
-        }, [isLoading])
-    }
 
     const getUser = async () => {
         setIsLoading(true);
@@ -83,7 +76,7 @@ export default function User(props) {
         getPhotos()
         // eslint-disable-next-line/exhaustive-deps
     }, [page])
-    useLoadingBar(isLoading, loadingBar)
+    const { loadingBar } = useLoadingBar(isLoading);
 
     return (
         <Container>

@@ -1,8 +1,9 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
 import LoadingBar from "react-top-loading-bar";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { SearchCollectionsContainer, LinksContainer, HeaderContainer, StyledLink, MasonryContainer, Column, CollectionContainer, Collection } from "./SearchCollections.styles";
+import { useLoadingBar } from "utils";
 
 export default function SearchCollections(props) {
     const [collections, setCollections] = useState(null);
@@ -12,15 +13,6 @@ export default function SearchCollections(props) {
     const [hasMore, setHasMore] = useState(true);
     const [totalCollections, setTotalCollections] = useState(null);
     // eslint-disable-next-line
-    const loadingBar = useRef();
-
-    function useLoadingBar(isLoading, loadingBar) {
-        useEffect(() => {
-            isLoading ? loadingBar.current.continuousStart() : loadingBar.current.complete();
-            // eslint-disable-next-line/exhaustive-deps
-        }, [isLoading])
-    }
-
 
     const getNextPage = () => {
         setPage(page + 1);
@@ -66,7 +58,7 @@ export default function SearchCollections(props) {
         }
     }, [page, collections])
 
-    useLoadingBar(isLoading, loadingBar)
+    const { loadingBar } = useLoadingBar(isLoading);
 
     return (
         <SearchCollectionsContainer>
@@ -92,7 +84,9 @@ export default function SearchCollections(props) {
                                     {column.map((collection) => {
                                         return (
                                             <CollectionContainer>
-                                                <Collection alt={collection.cover_photo.alt_description} src={collection.cover_photo.urls.regular} />
+                                                <StyledLink to={`/collection/${collection.id}`}>
+                                                    <Collection alt={collection.cover_photo.alt_description} src={collection.cover_photo.urls.regular} />
+                                                </StyledLink>
                                             </CollectionContainer>
                                         );
                                     })}

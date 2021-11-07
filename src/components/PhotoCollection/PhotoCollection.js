@@ -1,41 +1,18 @@
-import axios from "axios";
 import LoadingBar from "react-top-loading-bar";
-import { useState, useEffect, useRef } from "react";
-import { Container, Image, Header, Gallery, ImageContainer } from "./PhotoCollection.styles";
+import { useEffect } from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { useLoadingBar } from "utils/index"
+import { Container, Image, Header, Gallery, ImageContainer } from "./PhotoCollection.styles";
+import { getCollections } from "store/collectionFeed/collectionFeedActions";
 
-export default function PhotoCollection() {
-    const [collections, setCollections] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [hasError, setHasError] = useState(false);
-    // eslint-disable-next-line
-    const loadingBar = useRef();
-
-    function useLoadingBar(isLoading, loadingBar) {
-        useEffect(() => {
-            isLoading ? loadingBar.current.continuousStart() : loadingBar.current.complete();
-            // eslint-disable-next-line/exhaustive-deps
-        }, [isLoading])
-    }
-
-    const getCollections = async () => {
-        setIsLoading(true);
-        try {
-            const url = `${process.env.REACT_APP_ENDPOINT}/collections?&per_page=5&client_id=${process.env.REACT_APP_API_KEY}`
-            const { data } = await axios(url);
-            setCollections(data);
-            setIsLoading(false);
-        } catch (err) {
-            setHasError(true);
-            setIsLoading(false);
-        }
-    };
+function PhotoCollection({ collections, isLoading, hasError, getCollections }) {
     useEffect(() => {
         getCollections()
         // eslint-disable-next-line/exhaustive-deps
     }, []);
 
-    useLoadingBar(isLoading, loadingBar);
+    const { loadingBar } = useLoadingBar(isLoading);
 
     return (
         <Container>
@@ -57,3 +34,14 @@ export default function PhotoCollection() {
     )
 
 }
+
+const mapStateToProps = (state) => ({
+    isLoading: state.collectionFeed.isLoading,
+    hasError: state.collectionFeed.hasError,
+    collections: state.collectionFeed.collections
+
+})
+const mapDispatchToProps = {
+    getCollections
+}
+export default connect(mapStateToProps, mapDispatchToProps)(PhotoCollection);

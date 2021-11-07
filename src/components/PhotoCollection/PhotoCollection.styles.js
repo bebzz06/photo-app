@@ -8,7 +8,7 @@ margin-top: 46px;
 align-self: center;
 `
 export const Header = styled.div`
-text-align: start;
+text-align: center;
 margin-bottom: 20px;
 font-weight: 600;
 opacity: 0.39;

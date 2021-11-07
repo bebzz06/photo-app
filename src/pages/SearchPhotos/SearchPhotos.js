@@ -1,9 +1,10 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import LoadingBar from "react-top-loading-bar";
 import axios from "axios";
+import { useState, useEffect } from "react";
 import { Modal } from "components";
-import { useState, useEffect, useRef } from "react";
 import { SearchPhotosContainer, HeaderContainer, LinksContainer, StyledLink, MasonryContainer, Column, ImageContainer, Image } from "./SearchPhotos.styles";
+import { useLoadingBar } from "utils";
 
 export default function SearchPhotos(props) {
     const [photos, setPhotos] = useState(null);
@@ -16,14 +17,6 @@ export default function SearchPhotos(props) {
     const [hasMore, setHasMore] = useState(true);
     const [totalPhotos, setTotalPhotos] = useState(null);
     // eslint-disable-next-line
-    const loadingBar = useRef();
-
-    function useLoadingBar(isLoading, loadingBar) {
-        useEffect(() => {
-            isLoading ? loadingBar.current.continuousStart() : loadingBar.current.complete();
-            // eslint-disable-next-line/exhaustive-deps
-        }, [isLoading])
-    }
 
     const getNextPage = () => {
         setPage(page + 1);
@@ -79,7 +72,7 @@ export default function SearchPhotos(props) {
         }
     }, [photos, page])
 
-    useLoadingBar(isLoading, loadingBar);
+    const { loadingBar } = useLoadingBar(isLoading);
 
     return (
         <SearchPhotosContainer>

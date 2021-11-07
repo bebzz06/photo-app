@@ -26,6 +26,7 @@ position: relative;
 margin-bottom: 28px;
 max-width: 100%;
 min-height: 325px;
+cursor: pointer;
 `
 export const Image = styled.img`
   width: 100%;
