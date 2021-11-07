@@ -1,7 +1,7 @@
 import { Modal } from "components";
-import { useState, useEffect } from "react";
-import { FavoritesContainer, MasonryContainer, Column, ImageContainer, Image } from "./Favorites.styles";
+import { useState } from "react";
 import { connect } from "react-redux";
+import { FavoritesContainer, MasonryContainer, Column, ImageContainer, Image } from "./Favorites.styles";
 import { useMasonry } from "utils";
 
 

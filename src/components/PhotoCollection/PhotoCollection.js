@@ -1,9 +1,9 @@
 import LoadingBar from "react-top-loading-bar";
 import { useEffect } from "react";
-import { Container, Image, Header, Gallery, ImageContainer } from "./PhotoCollection.styles";
-import { Link } from "react-router-dom";
-import { useLoadingBar } from "../../utils/index"
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import { useLoadingBar } from "utils/index"
+import { Container, Image, Header, Gallery, ImageContainer } from "./PhotoCollection.styles";
 import { getCollections } from "store/collectionFeed/collectionFeedActions";
 
 function PhotoCollection({ collections, isLoading, hasError, getCollections }) {

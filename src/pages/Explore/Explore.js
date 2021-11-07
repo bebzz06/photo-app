@@ -1,11 +1,11 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import LoadingBar from "react-top-loading-bar";
-import { Modal } from "components";
 import { useEffect } from "react";
-import { MasonryContainer, ExploreContainer, Column, ImageContainer, Image } from "./Explore.styles";
 import { connect } from "react-redux";
+import { MasonryContainer, ExploreContainer, Column, ImageContainer, Image } from "./Explore.styles";
 import { getPhotos, handleMasonryModal, resetState } from "../../store/randomPhotos/randomPhotosActions";
 import { useMasonry, useLoadingBar } from "utils";
+import { Modal } from "components";
 
 function Explore({ randomPhotos, isLoading, hasError, showMasonryModal, getPhotos, handleMasonryModal, resetState }) {
 

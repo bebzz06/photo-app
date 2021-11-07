@@ -1,8 +1,8 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import LoadingBar from "react-top-loading-bar";
 import axios from "axios";
-import { Modal } from "components";
 import { useState, useEffect } from "react";
+import { Modal } from "components";
 import { SearchPhotosContainer, HeaderContainer, LinksContainer, StyledLink, MasonryContainer, Column, ImageContainer, Image } from "./SearchPhotos.styles";
 import { useLoadingBar } from "utils";
 

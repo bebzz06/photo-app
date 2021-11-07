@@ -1,12 +1,11 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import LoadingBar from "react-top-loading-bar";
-import { Modal } from "components";
 import { useEffect } from "react";
 import { CollectionContainer, Header, CoverPhoto, Info, Title, StyledLink, TotalPhotos, StyledButton, MasonryContainer, Column, ImageContainer, Image } from "./Collection.styles";
 import { useLoadingBar, useMasonry } from "utils"
 import { connect } from 'react-redux';
 import { getInfo, resetInfo, getCollectionFeed, handleModal, getNextPage, resetCollectionFeed } from 'store/collectionFeed/collectionFeedActions';
-
+import { Modal } from "components";
 function Collection({ collectionInfo, isLoading, hasError, collectionFeed, page, hasMore, showModal, getInfo, resetInfo, getCollectionFeed, handleModal, getNextPage, resetCollectionFeed, ...rest }) {
 
     useEffect(() => {

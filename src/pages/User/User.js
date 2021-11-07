@@ -1,11 +1,10 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
 import LoadingBar from "react-top-loading-bar";
-import { Modal } from "components";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Container, Wrapper, ProfilePicture, InfoContainer, Name, PortfolioLink, Statistics, TotalPhotosWrapper, TotalPhotos, FollowersCountWrapper, FollowersCount, Label, MasonryContainer, Column, ImageContainer, Image } from "./User.styles";
 import { useLoadingBar } from "utils";
-
+import { Modal } from "components";
 
 export default function User(props) {
     const [isLoading, setIsLoading] = useState(false);

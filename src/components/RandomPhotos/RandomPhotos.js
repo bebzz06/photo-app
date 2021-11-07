@@ -1,14 +1,14 @@
 import moment from "moment";
 import InfiniteScroll from "react-infinite-scroll-component";
 import LoadingBar from "react-top-loading-bar";
-import { Modal } from "components";
 import { useEffect } from "react";
+import { connect } from "react-redux";
 import {
     Container, Post, TopWrapper, StyledLink, Avatar, AuthorInfo,
     UserName, Updated, PhotoDescription, PhotoWrapper, Photo, Footer, BrokenHeartIcon,
     StyledBrokenHeart, StyledStar, StyledFilledStar, StyledThreeDots
 } from "./RandomPhotos.styles"
-import { connect } from "react-redux";
+import { Modal } from "components";
 import { getPhotos, handleModal, resetState, handleLike } from "../../store/randomPhotos/randomPhotosActions";
 import { useLoadingBar } from "utils"
 
