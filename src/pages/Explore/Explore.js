@@ -1,26 +1,13 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import LoadingBar from "react-top-loading-bar";
 import { Modal } from "components";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { MasonryContainer, ExploreContainer, Column, ImageContainer, Image } from "./Explore.styles";
 import { connect } from "react-redux";
 import { getPhotos, handleMasonryModal, resetState } from "../../store/randomPhotos/randomPhotosActions";
+import { useMasonry, useLoadingBar } from "utils";
 
 function Explore({ randomPhotos, isLoading, hasError, showMasonryModal, getPhotos, handleMasonryModal, resetState }) {
-
-    const loadingBar = useRef();
-
-    function useLoadingBar(isLoading, loadingBar) {
-        useEffect(() => {
-            isLoading ? loadingBar.current.continuousStart() : loadingBar.current.complete();
-            // eslint-disable-next-line/exhaustive-deps
-        }, [isLoading])
-    }
-
-    let masonry = [[], [], []];
-    for (let i = 0; i < randomPhotos.length; i++) {
-        masonry[i % 3].push(randomPhotos[i]);
-    }
 
     useEffect(() => {
         getPhotos();
@@ -30,7 +17,8 @@ function Explore({ randomPhotos, isLoading, hasError, showMasonryModal, getPhoto
         // eslint-disable-next-line/exhaustive-deps
     }, []);
 
-    useLoadingBar(isLoading, loadingBar);
+    const { layout: masonry } = useMasonry(randomPhotos);
+    const { loadingBar } = useLoadingBar(isLoading);
     return (
         <InfiniteScroll
             dataLength={masonry}

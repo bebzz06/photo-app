@@ -7,10 +7,10 @@ import { Link } from 'react-router-dom';
 const Icon = styled(Link)`
 display: flex;
 flex-direction: column;
-margin-bottom: 6px;
 text-decoration: none;
 justify-content: center;
 background-color: rgb(249, 250, 251);
+margin-bottom: 4px;
 `
 const StyledCamera = styled.div`
 background: url(${Camera}) no-repeat center center;
@@ -19,6 +19,7 @@ height: 49px;
 background-color: white;
 border-radius: 5px; 
 `
+
 const StyledHeart = styled.div`
 background: url(${Heart}) no-repeat center center;
 width: 49px;
@@ -33,6 +34,7 @@ height: 49px;
 background-color: white;
 border-radius: 5px;
 `
+
 const Label = styled.div`
 font-size: 8px;
 color: rgb(153,153,153);
@@ -50,7 +52,7 @@ export default function Icons() {
         </Icon>
         <Icon to={"/"}>
             <StyledScan />
-            <Label>Theme</Label>
+            <Label>Home</Label>
         </Icon>
     </>)
 }

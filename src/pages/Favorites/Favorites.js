@@ -1,7 +1,9 @@
 import { Modal } from "components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FavoritesContainer, MasonryContainer, Column, ImageContainer, Image } from "./Favorites.styles";
 import { connect } from "react-redux";
+import { useMasonry } from "utils";
+
 
 function Favorites({ likedPhotos, hasError }) {
     const [currentCol, setCurrentCol] = useState(-1);
@@ -16,10 +18,8 @@ function Favorites({ likedPhotos, hasError }) {
     }
 
     let newPhotos = Object.values(likedPhotos)
-    let masonry = [[], [], []];
-    for (let i = 0; i < newPhotos.length; i++) {
-        masonry[i % 3].push(newPhotos[i]);
-    }
+    const { layout: masonry } = useMasonry(newPhotos);
+
 
     return (
         <FavoritesContainer>
@@ -40,8 +40,8 @@ function Favorites({ likedPhotos, hasError }) {
                     })}
                 </MasonryContainer>
             }
-            {showModal > -1 &&
-                < Modal photo={masonry[currentCol][currentPhoto]} showModal={showModal} handleModal={handleModal} />}
+            {showModal > -1 && Object.keys(likedPhotos).length &&
+                < Modal photo={masonry[currentCol][currentPhoto]} handleModal={handleModal} />}
             {hasError && <h1>ERROR</h1>}
         </FavoritesContainer>
     )
